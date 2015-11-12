@@ -4,6 +4,7 @@ class DB{
 	private $password;
 	private $host;
 	private $db;
+	//verifies you can connect and sets username and password for future use
 	function connect($host,$db,$username,$password){
 		try{
 			$dbh = new PDO("mysql:host=$host;dbname=$db",$username,$password);
@@ -21,6 +22,7 @@ class DB{
 			return false;
 		}
 	}
+	//gets new connection object
 	function getConnection(){
 		try{
 			$dbh = new PDO("mysql:host=" . $this->host.";dbname=".$this->db,$this->username,$this->password);
@@ -30,6 +32,7 @@ class DB{
 			echo $e->getMessage();
 		}
 	}
+	//Disconnects from the db
 	function disconnect(){
 		try{
 			$dbh->close();
@@ -38,6 +41,8 @@ class DB{
 			echo $e->getMessage();
 		}
 	}
+	//used to comma separate user inputs based on one or two arrays. Used mainly in query builder for field names, and values.
+	//If two arrays are sent in, the format is adjusted to "array1value[0]=array2value[0],array1value[1]=array2value[1]"
 	function commaSeparate($array,$array2=null){
 		$commaList="";
 		if($array2==null){
@@ -52,6 +57,7 @@ class DB{
 		$commaList = trim($commaList, ',');	
 		return $commaList;
 	}
+	//Builds the query based on user input to be used to query the db
 	function buildQuery($type,$table,$columns,$where=null,$values=null){
 		$query="";
 		if($type=="select"){
@@ -80,6 +86,7 @@ class DB{
 			return $query;
 		}
 	}
+	//Select statements method to execute them against the database, has optional where param to further filter results
 	function getData($table,$columns,$where=null){
 		try{
 			$dbh = $this->getConnection();
@@ -94,8 +101,10 @@ class DB{
 			echo $e->getMessage();
 		}
 	}
-	function insertData($table,$columns,$values,$where=null){
+	//insert statements method to execute against the database. 
+	function insertData($table,$columns,$values){
 		try{
+			$where=null;
 			$dbh = $this->getConnection();
 			$query = $this->buildQuery("insert",$table,$columns,$where,$values);
 			$stmt = $dbh->prepare($query);
@@ -122,6 +131,7 @@ class DB{
 			return false;
 		}
 	}
+	//delete statements to execute against the database, optional where param to further clarify the statement
 	function deleteData($table,$where=null){
 		try{
 			$columns=null;
