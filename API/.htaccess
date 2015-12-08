@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteBase /~adw4520/DB_connect/API
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ MyService.php?request=$1 [L,QSA,NC]

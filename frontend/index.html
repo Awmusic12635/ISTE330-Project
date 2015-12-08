@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Project 2</title>
+<script src='http://code.jquery.com/jquery-latest.js' type="text/javascript"></script>
+<script src='http://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js' type="text/javascript"></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js' type="text/javascript"></script>
+<script src='http://maps.google.com/maps/api/js?sensor=true'></script>
+<script src='gmaps.js' type="text/javascript"></script>
+<script src='spin.min.js' type="text/javascript"></script>
+<script src='jquery.spin.js' type="text/javascript"></script>
+<script src='bootbox.min.js' type="text/javascript"></script>
+<script src='http://cdn.jsdelivr.net/jquery.validation/1.13.1/jquery.validate.min.js' type="text/javascript"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css">
+<style>
+	#search{
+		height:40px;
+		font-size: 15pt;
+	}
+	#content{
+	    position: relative;
+	    top: 50%;
+	    left: 50%;
+	    margin-left: -200px;
+	}
+	body{
+		background-color: #f0f0f0;
+	}
+	.pointer{
+		cursor:pointer;
+	}
+	.modal-body{
+		min-height: 600px;
+		overflow-y: auto;
+	}
+	#loginButton {
+	  color: #fff;
+	  background-color: #6496c8;
+	  text-shadow: -1px 1px #417cb8;
+	  border: none;
+	  position:absolute; 
+	  top:0; 
+	  right:0;
+	}
+</style>
+<style>
+cbp-hrmenu {
+	width: 100%;
+	margin-top: 2em;
+	border-bottom: 4px solid #47a3da;
+}
+
+/* general ul style */
+.cbp-hrmenu ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+/* first level ul style */
+.cbp-hrmenu > ul,
+.cbp-hrmenu .cbp-hrsub-inner {
+	width: 90%;
+	max-width: 70em;
+	margin: 0 auto;
+	padding: 0 1.875em;
+}
+
+.cbp-hrmenu > ul > li {
+	display: inline-block;
+}
+
+.cbp-hrmenu > ul > li > a {
+	font-weight: 700;
+	padding: 1em 2em;
+	color: #999;
+	display: inline-block;
+}
+
+.cbp-hrmenu > ul > li > a:hover {
+	color: #47a3da;
+}
+
+.cbp-hrmenu > ul > li.cbp-hropen a,
+.cbp-hrmenu > ul > li.cbp-hropen > a:hover {
+	color: #fff;
+	background: #47a3da;
+}
+
+/* sub-menu */
+.cbp-hrmenu .cbp-hrsub {
+	display: none;
+	position: absolute;
+	background: #47a3da;
+	width: 100%;
+	left: 0;
+}
+
+.cbp-hropen .cbp-hrsub {
+	display: block;
+	padding-bottom: 3em;
+}
+
+.cbp-hrmenu .cbp-hrsub-inner > div {
+	width: 33%;
+	float: left;
+	padding: 0 2em 0;
+}
+
+.cbp-hrmenu .cbp-hrsub-inner:before,
+.cbp-hrmenu .cbp-hrsub-inner:after {
+	content: " ";
+	display: table;
+}
+
+.cbp-hrmenu .cbp-hrsub-inner:after {
+	clear: both;
+}
+
+.cbp-hrmenu .cbp-hrsub-inner > div a {
+	line-height: 2em;
+}
+
+.cbp-hrsub h4 {
+	color: #afdefa;
+	padding: 2em 0 0.6em;
+	margin: 0;
+	font-size: 160%;
+	font-weight: 300;
+}
+
+/* Examples for media queries */
+
+@media screen and (max-width: 52.75em) { 
+
+	.cbp-hrmenu {
+		font-size: 80%;
+	}
+
+}
+
+@media screen and (max-width: 43em) { 
+
+	.cbp-hrmenu {
+		font-size: 120%;
+		border: none;
+	}
+
+	.cbp-hrmenu > ul,
+	.cbp-hrmenu .cbp-hrsub-inner {
+		width: 100%;
+		padding: 0;
+	}
+
+	.cbp-hrmenu .cbp-hrsub-inner {
+		padding: 0 2em;
+		font-size: 75%;
+	}
+
+	.cbp-hrmenu > ul > li {
+		display: block;
+		border-bottom: 4px solid #47a3da;
+	}
+
+	.cbp-hrmenu > ul > li > a { 
+		display: block;
+		padding: 1em 3em;
+	}
+
+	.cbp-hrmenu .cbp-hrsub { 
+		position: relative;
+	}
+
+	.cbp-hrsub h4 {
+		padding-top: 0.6em;
+	}
+
+}
+
+@media screen and (max-width: 36em) { 
+	.cbp-hrmenu .cbp-hrsub-inner > div {
+		width: 100%;
+		float: none;
+		padding: 0 2em;
+	}
+}	
+</style>
+<script type="text/javascript">
+	var cbpHorizontalMenu = (function() {
+
+	var $listItems = $( '#cbp-hrmenu > ul > li' ),
+		$menuItems = $listItems.children( 'a' ),
+		$body = $( 'body' ),
+		current = -1;
+
+	function init() {
+		$menuItems.on( 'click', open );
+		$listItems.on( 'click', function( event ) { event.stopPropagation(); } );
+	}
+
+	function open( event ) {
+
+		if( current !== -1 ) {
+			$listItems.eq( current ).removeClass( 'cbp-hropen' );
+		}
+
+		var $item = $( event.currentTarget ).parent( 'li' ),
+			idx = $item.index();
+
+		if( current === idx ) {
+			$item.removeClass( 'cbp-hropen' );
+			current = -1;
+		}
+		else {
+			$item.addClass( 'cbp-hropen' );
+			current = idx;
+			$body.off( 'click' ).on( 'click', close );
+		}
+
+		return false;
+
+	}
+
+	function close( event ) {
+		$listItems.eq( current ).removeClass( 'cbp-hropen' );
+		current = -1;
+	}
+
+	return { init : init };
+
+})();
+</script>
+<script type="text/javascript">
+
+	
+	//get the tabs that the org will need...
+	function getTabs(orgId){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/Application/Tabs?orgId='+orgId},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//Start building the modal
+					var x='<div id="infomodal" class="modal fade"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">Modal title</h4></div><div class="modal-body"><div role="tabpanel"> <ul class="nav nav-tabs" role="tablist">';
+					//trip through the xml and grab all of the 'Tab' nodes
+					var y = $('Tab',d).first();
+					$('Tab',d).each(function(){
+						if($(this).text() == y.text()){
+							x+='<li class="active"><a id="Tab'+$(this).text()+'" href="#'+$(this).text()+'" data-toggle="tab">'+$(this).text()+'</a></li>';
+						}else{
+							x+='<li><a id="Tab'+$(this).text()+'" href="#'+$(this).text()+'" data-toggle="tab">'+$(this).text()+'</a></li>';
+						}				
+					});
+					x+='</ul><div class="tab-content">';
+					//Build each tab panel
+					$('Tab',d).each(function(){
+						if($(this).text() == y.text()){
+							x+='<div class="tab-pane active" id="'+$(this).text()+'"></div>';
+						}else{
+							x+='<div class="tab-pane" id="'+$(this).text()+'"></div>';
+						}
+					});
+					x+='</div></div></div></div></div></div>';
+						        
+					//Spit the modal out to the screen	  
+					$('#modalout').html(x);
+					//Call get general to populate the first tab
+					getTabGeneral(orgId);
+					//Show the modal
+					$('#infomodal').modal('show');
+					//Even for when tabs change, get data for the new tab
+					$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+						//Call method for the specific tab it is changing to
+						window['get'+e.target.id](orgId);
+						//Attempt some modal resizing to fix locations tab.
+						//rescale();
+					});
+					
+				}
+			}
+		});
+	}
+	//Attempt to fix locations tab size
+	function rescale(){
+		var totalsize = {width: $(window).width() , height: $(window).height() }
+	    var offsettotal = 20;
+	    var offsettotalBody = 150;
+	    $('#infomodal').css('height', totalsize.height - offsettotal );
+	    $('.modal-body').css('height', totalsize.height - (offsettotal + offsettotalBody));
+	    $('#infomodal').css('top', 0);
+	}
+	$(window).bind("resize", rescale);
+	//get the General Information for a specific orgId
+	function getTabGeneral(orgId){
+		if($.trim($("#General").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/General'},
+			success:function(d){
+				//Set the name of the modal top
+				$('.modal-title').text($(d).find('name').text());
+				//build a table...
+				/*
+				var x='<table id="generaltable" class="display"><tr><td>Name:</td><td>'+removeNull($(d).find('name').text())+'</td></tr>';
+				x+='<tr><td>Description:</td><td>'+removeNull($(d).find('description').text())+'</td></tr>';
+				x+='<tr><td>Email:</td><td>'+removeNull($(d).find('email').text())+'</td></tr>';
+				x+='<tr><td>Website:</td><td>'+removeNull($(d).find('website').text())+'</td></tr>';
+				x+='<tr><td>Number of Members:</td><td>'+removeNull($(d).find('nummembers').text())+'</td></tr>';
+				x+='<tr><td>Number of Calls:</td><td>'+removeNull($(d).find('numcalls').text())+'</td></tr></table>';*/
+				
+				var x='<h4>General Information</h4><div><table id="generaltable" class="display"><thead><tr><td>Name</td><td>Description</td><td>Email</td><td>Website</td><td># of Members</td><td># of Calls</td></tr></thead><tbody><tr><td>'+removeNull($(d).find('name').text())+'</td><td>'+removeNull($(d).find('description').text())+'</td><td>'+removeNull($(d).find('email').text())+'</td><td>'+removeNull($(d).find('website').text())+'</td><td>'+removeNull($(d).find('nummembers').text())+'</td><td>'+removeNull($(d).find('numcalls').text())+'</td></tr><tbody></table></div>';
+				
+				//put it out...
+				$('#General').html(x);
+				$('#generaltable').DataTable();
+			}
+		});
+		}
+	}
+	map=null;
+	//Get location information
+	function getTabLocations(orgId){
+		//check if tab is empty
+		if($.trim($("#Locations").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Locations'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//Build location tab
+					var x='<h4>Location Information</h4><div class="col-xs-6" id="locationinfo"><select id="selectlocation" onchange="locationChange();" id="locationselect">';
+					$('location',d).each(function(){
+						x+='<option  value="site'+$(this).find('siteId').text()+'">'+$(this).find('type').text()+'</option>';
+					});
+					x+='</select>';
+					
+					lon = "";
+					lat ="";
+					//Go through each location and build hidden table
+					$('location',d).each(function(){
+						x+='<table style="display:none;" id="site'+$(this).find('siteId').text()+'" class="table"><tbody><tr><td>Type</td><td id="typesite'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('type').text())+'</td></tr><tr><td>Address 1</td><td id="address1site'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('address1').text())+'</td></tr><tr><td>Address 2</td><td id="address2site'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('address2').text())+'</td></tr><tr><td>City</td><td id="citysite'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('city').text())+'</td></tr><tr><td>State</td><td id="statesite'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('state').text())+'</td></tr><tr><td>Zip</td><td id="zipsite'+$(this).find('siteId').text()+'">'+ removeNull($(this).find('zip').text())+'</td></tr><tr><td>Phone</td><td>'+ removeNull($(this).find('phone').text())+'</td></tr><tr><td>TTY Phone</td><td>'+ removeNull($(this).find('ttyphone').text())+'</td></tr><tr><td>Fax</td><td>'+ removeNull($(this).find('fax').text())+'</td></tr><tr><td>Latitude</td><td id="latsite'+$(this).find('siteId').text()+'" class="lat">'+ removeNull($(this).find('latitude').text())+'</td></tr><tr><td>Longitude</td><td id="longsite'+$(this).find('siteId').text()+'" class="long">'+ removeNull($(this).find('longitude').text())+'</td></tr><tr><td id="countysite'+$(this).find('siteId').text()+'">County</td><td>'+ removeNull($(this).find('countyName').text())+'</td></tr></tbody></table>';
+					});
+					
+					x+='</div>';
+					
+					//div for map
+					x+='<div id="gmap" class="col-xs-6" style="height:400px;width:400px;"></div';
+					
+					//spit it out
+					$('#Locations').html(x);
+					
+					//Check if there is long and lat. Map breaks otherwise. Ran out of time
+					if($('.lat').first().text() != ''){
+						map = new GMaps({
+						  div: '#gmap',
+						  lat: parseFloat($('.lat').first().text()),
+						  lng: parseFloat($('.long').first().text())
+						});
+						map.addMarker({
+						  lat: parseFloat($('.lat').first().text()),
+						  lng: parseFloat($('.long').first().text()),
+						  title: $('#typesite1').text(),
+						});
+					}else{
+						//$('#gmap').html('<p>Map not available</p>');
+						doCordinates("site1");
+					}
+					//Show first tab
+					$('#site1').css('display',"block");
+				}
+			}
+		});
+		}
+	}
+	//Function the converts address information to long and lat and creates / updates map as needed with that info
+	function doCordinates(site){
+		var geocoder = new google.maps.Geocoder();
+		var address = $('#address1'+site).text() + ' ' + $('#city'+site).text() + ' ' + $('#state'+site).text() + ' ' + $('#zip'+site).text();
+		endresults=null;
+		//Check if it is the first site, if so it needs to create instead of update map
+		if(site!= 'site1'){
+			//Calls out to google ot convert address to long lat
+			geocoder.geocode( { 'address': address}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK){
+					//Create map
+					map = new GMaps({
+						div: '#gmap',
+						lat: results[0].geometry.location.k,
+						lng: results[0].geometry.location.D
+					});
+					//Add marker to map
+					map.addMarker({
+						lat: results[0].geometry.location.k,
+						lng: results[0].geometry.location.D,
+						title: $('#typesite1').text(),
+					});
+		  		}else{
+			  		console.log("ERROR: "+status);
+		  		}
+			});
+		}
+		//Else we just need to update the map
+		else{
+			//Call out to google ot convert address to long and lat
+			geocoder.geocode( { 'address': address}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK){
+					//Remove all current markers, update map and create new marker
+					map.removeMarkers();
+		      		map.setCenter(results[0].geometry.location.k,results[0].geometry.location.D);
+					map.addMarker({
+						lat: results[0].geometry.location.k,
+						lng: results[0].geometry.location.D,
+						title: $('#type'+site).text(),
+					});
+		  		}else{
+			  		console.log("ERROR: "+status);
+		  		}
+			});
+		}
+	}
+	//function do deal with when location selected changes
+	function locationChange(){
+		//hides all then shows the selected one
+		$('table','#Locations').each(function(){
+			$(this).css('display','none');
+			
+			if($(this).attr('id')==$('#selectlocation').val()){
+				$(this).css('display','block');
+			}
+		});
+		//Checks if there is a long and lat when the map selection is updated
+		if($.trim($('#lat'+$('#selectlocation').val()).text())==''){
+			//No long and lat, call doCordinates to convert address to long and lat and update map
+			doCordinates($('#selectlocation').val());
+		}else{
+			//Removes all markers, updates map and creates new marker
+			map.removeMarkers();
+			map.setCenter(parseFloat($('#lat'+$('#selectlocation').val()).text()),parseFloat($('#long'+$('#selectlocation').val()).text()));
+			map.addMarker({
+				lat: parseFloat($('#lat'+$('#selectlocation').val()).text()),
+				lng: parseFloat($('#long'+$('#selectlocation').val()).text()),
+				title: $('#selectlocation').val(),
+			});
+		}
+	}
+	//Get training info
+	function getTabTraining(orgId){
+		//Check if empty
+		if($.trim($("#Training").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Training'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//Start building 
+					var x='<h4>Training</h4><div><table id="traininginfo" class="display"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+					//Get each training and build table
+					$('training',d).each(function(){
+						x+='<tr><td>'+ removeNull($(this).find('type').text())+'</td><td>'+ removeNull($(this).find('abbreviation').text())+'</td></tr>'
+					});
+					
+					x+='</tbody></table></div>';
+					$('#Training').html(x);
+					//Turn it into a datatable using plugin
+					$('#traininginfo').DataTable();
+				}
+			}
+		});
+		}
+	}
+	//Get treatment info
+	function getTabTreatment(orgId){
+		// check if empty
+		if($.trim($("#Treatment").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Treatments'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//Start building
+					var x='<h4>Treatments</h4><div><table id="treatmentinfo" class="display"><thead><tr><th>Type</th><th>Abbreviation</th></tr></thead><tbody>';
+					//build row for each treatment offered
+					$('treatment',d).each(function(){
+						x+='<tr><td>'+ removeNull($(this).find('type').text())+'</td><td>'+ removeNull($(this).find('abbreviation').text())+'</td></tr>'
+					});
+					
+					x+='</tbody></table></div>';
+					//throw out and turn into formatted table
+					$('#Treatment').html(x);
+					$('#treatmentinfo').DataTable();
+				}
+			}
+		});
+		}
+	}
+	//Get facilities info
+	function getTabFacilities(orgId){
+		//check if empty
+		if($.trim($("#Facilities").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Facilities'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//start building
+					var x='<h4>Facilities</h4><div"><table id="facilitiesinfo" class="display"><thead><tr><th>Type</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+					//build row for each facility
+					$('facility',d).each(function(){
+						x+='<tr><td>'+ removeNull($(this).find('type').text())+'</td><td>'+ removeNull($(this).find('quantity').text())+'</td><td>'+ removeNull($(this).find('description').text())+'</td></tr>'
+					});
+					
+					x+='</tbody></table></div>';
+					//send out and format table with plugin
+					$('#Facilities').html(x);
+					$('#facilitiesinfo').DataTable();
+				}
+			}
+		});
+		}
+	}
+	//get equipment info
+	function getTabEquipment(orgId){
+		//check if empty
+		if($.trim($("#Equipment").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Equipment'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					
+					//start building
+					var x='<h4>Equipment</h4><div"><table id="equipmentinfo" class="display"><thead><tr><th>Type</th><th>Quantity</th><th>Description</th></tr></thead><tbody>';
+					//build row for each equipment offerred
+					$('equipment',d).each(function(){
+						x+='<tr><td>'+ removeNull($(this).find('type').text())+'</td><td>'+ removeNull($(this).find('quantity').text())+'</td><td>'+ removeNull($(this).find('description').text())+'</td></tr>'
+					});
+					
+					x+='</tbody></table></div>';
+					//send out and format table
+					$('#Equipment').html(x);
+					$('#equipmentinfo').DataTable();
+				}
+			}
+		});
+		}
+	}
+	//get physicians info
+	function getTabPhysicians(orgId){
+		//$('#Physicians').html('going to get Physicians of '+id);
+		if($.trim($("#Physicians").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/Physicians'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//start building
+					var x='<h4>Physicians with Admitting Priviliages</h4><div"><table id="physiciansinfo" class="display"><thead><tr><th>Name</th><th>License</th><th>Phone</th></tr></thead><tbody>';
+					//build row for each physician
+					$('physician',d).each(function(){
+						x+='<tr><td>'+ removeNull($(this).find('fName').text())+' '+removeNull($(this).find('mName').text()) +' '+removeNull($(this).find('lName').text())+'</td><td>'+ removeNull($(this).find('license').text())+'</td><td>'+ removeNull($(this).find('phone').text())+'</td></tr>'
+					});
+					
+					x+='</tbody></table></div>';
+					
+					//send out and format table using plugin
+					$('#Physicians').html(x);
+					$('#physiciansinfo').DataTable();
+				}
+			}
+		});
+		}
+	}
+	//Get people info
+	function getTabPeople(orgId){
+		//check if empty
+		if($.trim($("#People").html())==''){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			data:{path:'/'+orgId+'/People'},
+			success:function(d){
+				//error?
+				if($(d).find('error').length!=0){
+					//there was an error where?
+					//on the application server!
+				}else{
+					//start building
+					var x='<h4>People</h4><div id="peopleinfo"><select id="selectpeople" onchange="peopleChange();">';
+					$('site',d).each(function(){
+						x+='<option  value="people'+$(this).attr('siteId')+'">'+$(this).attr('address')+'</option>';
+					});
+					x+='</select>';
+					
+					lon = "";
+					lat ="";
+					//go through each site
+					$('site',d).each(function(){
+						x+='<table style="display:none;" id="people'+$(this).attr('siteId')+'" class="table"><thead><tr><th>Site '+ $(this).attr('siteId')+': '+$(this).attr('address')+'</th></tr><tr><th>Name</th><th>Role</th></tr></thead><tbody>';
+						//go through each person @ site
+						if(parseInt($(this).find('personCount').text())==0){
+							x+="<tr><td>No people</td><td>at this location</td></tr>";
+						}else{
+							$('person',$(this)).each(function(){
+								x+='<tr><td>'+ removeNull($(this).find('fName').text())+' '+removeNull($(this).find('mName').text()) +' '+removeNull($(this).find('lName').text())+'</td><td>'+ removeNull($(this).find('role').text())+'</td></tr>';
+							});	
+						}
+					});
+					
+					x+='</tbody></table></div>';
+					
+					//Output to screen and only show selected
+					$('#People').html(x);
+					$('#people1').css('display',"block");
+				}
+			}
+		});
+		}
+	}
+	//change selected table and hide the rest
+	function peopleChange(){
+		$('table','#People').each(function(){
+			$(this).css('display','none');
+			
+			if($(this).attr('id')==$('#selectpeople').val()){
+				$(this).css('display','block');
+			}
+		});
+	}
+	//Make sure outputs are not null
+	function removeNull(input){
+		if(input == null || input == "null"){
+			return "";
+		}else{
+			return input;
+		}
+	}
+
+	$(document).ready(function(){
+		//initial load of papers
+		//load papers
+		loadPapers();
+		$("#search").keyup(function(event){
+			//if(event.keyCode == 13){
+        		loadPapers($(this).val());
+			//}
+		});
+	});
+
+	//gets city info
+	function getCities(state){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			async:true,
+			cache:false,
+			data:{path:'/Cities?state='+state},
+			success:function(data){
+				if($(data).find('city').length == 0 ){
+					var x='There are no cities in our db for '+state;
+					$('#orgCitySearch').html(x);
+				}else{
+					//build options...
+					var x='<select name="town"><option value="">--All Cities in '+state+'--</option>';
+					$('city',data).each(function(){
+						x+='<option value="'+$(this).text()+'">'+$(this).text()+'</option>';
+					});
+					//pump it out...
+					$('#orgCitySearch').html(x+'</select>');
+				}
+			}
+		});
+	}
+	//gets org info
+	function getOrgTypes(){
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			async:true,
+			cache:false,
+			data:{path:'/OrgTypes'},
+			success:function(data){
+				//build options...
+				var x='<option value="">--All Org Types--</option>';
+				$('type',data).each(function(){
+					x+='<option value="'+$(this).text()+'">'+$(this).text()+'</option>';
+				});
+				//pump it out...
+				$('#orgType').html(x);
+			}
+		});
+	}
+	
+	
+	////////////////////////
+	//Do main search
+	function loadPapers(title){
+		if (title === undefined || title==="") {
+			title = "";
+		}else{
+			title="?Title="+encodeURIComponent(title);
+		}
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			async:true,
+			cache:false,
+			data:{path:'/Paper'+title},
+			dataType:'json',
+			success:function(data){
+				//alert("hi");
+				//build options...
+				var x='<table id="mainsearch" class="display">';
+				x+='<thead><tr><th>Title</th><th>Author</th><th>Description</th><th>Category</th></tr></thead><tbody>';
+				
+				$.each(data,function(index,element){
+					x+='<tr><td>'+element.Title+'</td>';
+					x+='<td>'+element.Author+'</td>';
+					x+='<td>'+element.Description+'</td>';
+					x+='<td>'+element.Category+'</td></tr>';
+				});
+
+				x+="</tbody></table>";
+				//pump it out and format it with plugin
+				$('#tableOutput').html(x);
+				$('#mainsearch').DataTable();
+				
+			},
+			error:function(jqXHR, textStatus, errorThrown) {
+				//console.dir(jqXHR);
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<input value="Login" id="loginButton" class="button" type="button">
+	      <h1 style="padding-left: 645px;">Home</h1>
+<nav id="cbp-hrmenu" class="cbp-hrmenu">
+	<ul>
+		<li><a href="#">Home</a></li>
+		<li><a href="#">Research</a></li>
+		<li><a href="#">Faculty</a></li>
+		<li><a href="#">Students</a></li>
+		<!-- ... -->
+	</ul>
+</nav>
+  <hr>
+  <div id='content'>
+  <form style="display:;" id="mainSearch">
+    <fieldset>
+      <legend hidden>Search Criteria</legend>
+      <p hidden>Organization Type <select name="type" id="orgType" onchange="changeOrg(this)"></select></p>
+      <p hidden><span id="orgLabel">Organization Name</span> <input name="name" id="orgName" type="text"> <em style="color: rgb(104, 129, 162);">*can be partial - "vol" for "Volunteer"</em></p>
+      <p hidden>State <select hidden name="state" id="state" onchange="getCities( $(this).val() )">
+        <option value="">
+          All States
+        </option>
+        <option value="AK">AK</option>
+        <option value="AL">AL</option>
+        <option value="AR">AR</option>
+        <option value="AZ">AZ</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DC">DC</option>
+        <option value="DE">DE</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="IA">IA</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="MA">MA</option>
+        <option value="MD">MD</option>
+        <option value="ME">ME</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MO">MO</option>
+        <option value="MS">MS</option>
+        <option value="MT">MT</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="NE">NE</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NV">NV</option>
+        <option value="NY" selected="selected">NY</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VA">VA</option>
+        <option value="VT">VT</option>
+        <option value="WA">WA</option>
+        <option value="WI">WI</option>
+        <option value="WV">WV</option>
+        <option value="WY">WY</option>
+      </select> <span id="orgCitySearch"></span></p>
+      
+      <p hidden>County <input name="county" id="county" type="text"></p>
+      <div hidden style="margin:0 0 0 210px">
+        <input value="Show Results" id="btnSearch" class="button" type="submit"> <input type="reset" class="button" value="Reset Form" onclick="$('#tableOutput').html('');">
+      </div>
+    </fieldset>
+  </form>
+  </div>
+  <h2 style="padding-left: 480px;">Top 10 Available Collaborations</h2>
+  <div style="padding-left: 400px ;padding-bottom: 50px;;margin-left: auto;margin-right: auto;"><input name="search" id="search" type="text" placeholder="Search DB" size="60"></div>
+  <div style="width:1250px;padding-left: 175px;" id="tableOutput"></div>
+  <div id="modalout"></div>
+</body>
+</html>
