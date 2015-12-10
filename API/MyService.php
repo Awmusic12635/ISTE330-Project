@@ -100,7 +100,7 @@
 								"status"=>"logged in",
 								"uid"=>$data[0]["user_id"],
 								"accesshash"=>$access,
-							)
+							);
 						}else{
 							return parent::_response("Failed to add user session",500);
 						}
