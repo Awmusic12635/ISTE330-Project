@@ -114,7 +114,7 @@ class DB{
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();
-			return false;
+			return $e->getMessage();
 		}
 	}
 	function updateData($table,$columns,$values,$where=null){
