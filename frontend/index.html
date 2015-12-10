@@ -751,7 +751,7 @@ cbp-hrmenu {
 				x+='<thead><tr><th>Title</th><th>Author</th><th>Description</th><th>Category</th></tr></thead><tbody>';
 				
 				$.each(data,function(index,element){
-					x+='<tr><td>'+element.Title+'</td>';
+					x+='<tr onclick="makeModal(' + index + ')"><td>'+element.Title+'</td>';
 					x+='<td>'+element.Author+'</td>';
 					x+='<td>'+element.Description+'</td>';
 					x+='<td>'+element.Category+'</td></tr>';
@@ -767,6 +767,49 @@ cbp-hrmenu {
 				//console.dir(jqXHR);
 			}
 		});
+	}
+	
+	function makeModal(paper)
+	{
+		//Start building the modal
+		$.ajax({
+			type:'get',
+			url:'proxy.php',
+			async:true,
+			cache:false,
+			data:{path:'/Paper/'+paper},
+			dataType:'json',
+			success:function(data){
+				var x = '<div id="infomodal" class="modal fade"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">Paper Information</h4></div><div class="modal-body">';
+				$.each(data,function(index,element)
+				{
+					if(index == 'Title')
+					{
+						x += '<h1>Title: ' + element + '</h1>';
+					}
+					if(index == 'Author')
+					{
+						x += '<h1>Author: ' + element + '</h1>';
+					}
+					if(index == 'Description')
+					{
+						x += '<h1>Description: ' + element + '</h1>';
+					}
+					if(index == 'Category')
+					{
+						x += '<h1>Category: ' + element + '</h1>';
+					}
+				})
+				x += '</div>';
+				//Spit the modal out to the screen	  
+				$('#modalout').html(x);
+				//Show the modal
+				$('#infomodal').modal('show');
+			},
+			error:function(jqXHR, textStatus, errorThrown) {
+				console.log("Error");
+			}
+		});			
 	}
 </script>
 </head>
