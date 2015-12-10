@@ -3,10 +3,10 @@
 	
 	$conn = new DB();
 	
-	$conn->connect("host","dbname","username","password");
-	$fields = array("field1","field2"); // or array("*") for all of them
-	$data = $conn->getData("tablename",$fields); //optional where statement i.e. getData("tablename",$fields,"something=something and nothing=nothing")
-	var_dump($data);
+	$conn->connect("localhost","finalProject","root","final")
+	$fields = array("user_id","username","password");
+	$data = $conn->getData("users",$fields,"username='AWacker'");
+	echo ($data);
 	
 
 ?>
