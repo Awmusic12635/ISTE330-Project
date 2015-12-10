@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-define ('HOSTNAME', 'http://kelvin.ist.rit.edu/~adw4520/DB_connect/API');
+define ('HOSTNAME', 'http://final.alexwacker.com/ISTE330-Project/API');
 if($_POST['path']){
 	//Wont be using this part - just wanted you to see what a post would look like!
 	$hold=explode('?',$_POST['path']);
