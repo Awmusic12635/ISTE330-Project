@@ -98,33 +98,14 @@
 				if($conn->connect("localhost","finalProject","root","final")){
 					//Paper?Title=something
 					if(isset($params["Title"])){
-						$filtered_paper_list= array();
-						foreach($this->papers_list as $paper_id => $paper){
-							if(strpos($paper["Title"], $params["Title"]) !== false){
-								//echo "hi";
-								$filtered_paper_list[$paper_id]=$paper;
-							}
-						}
-						return $filtered_paper_list;	
+						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
+						$data = $conn->getData("papers",$columns,"title like'%".$params["Title"]."%'");
+							return $data;
 					}else{
-						$columns = array("paper_id","abstract","citation","current_people","max_people");
+						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
 						$data = $conn->getData("papers",$columns);
 						
-						/*$fixedData = array();
-						for($x=0;x<count($data);$x++){
-							$fixedData[$data[$x]['paper_id']]=array();
-							foreach ($data[$x] as $key => $value){
-								if(is_string($key)){
-									$fixedData[$data[$x]['paper_id']][$key]=$value;
-								}
-							}
-							
-						}*/
-						
 						return $data;
-						//$list = array();
-					
-						//return $this->papers_list;	
 					}
 				}else{
 					return parent::_response("Failed to connect to DB",500);
@@ -132,7 +113,14 @@
 			}
 			//Paper/{id}
 			if(count($args) ==1 && $this->method=="GET"){
-				return $this->papers_list[$args[0]];
+				$conn = new DB();
+				if($conn->connect("localhost","finalProject","root","final")){
+					$columns = array("paper_id","title","abstract","citation","current_people","max_people");
+					$data = $conn->getData("papers",$columns,"paper_id='".$args[0]."'");
+					return $data;
+				}else{
+					return parent::_response("Failed to connect to DB",500);
+				}
 			}
 		}
 		protected function login($args,$params){
