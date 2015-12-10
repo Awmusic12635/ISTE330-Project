@@ -232,6 +232,19 @@ cbp-hrmenu {
 </script>
 <script type="text/javascript">	
 	////////////////////////
+	$(document).ready(function()
+	{
+		//initial load of papers
+		//load papers
+		loadPapers();
+		$("#search").keyup(function(event)
+		{
+			//if(event.keyCode == 13){
+			loadPapers($(this).val());
+			//}
+		});
+	});
+	
 	//Do main search
 	function loadPapers(title){
 		if (title === undefined || title==="") {
