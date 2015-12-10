@@ -43,10 +43,14 @@ class DB{
 	}
 	//used to comma separate user inputs based on one or two arrays. Used mainly in query builder for field names, and values.
 	//If two arrays are sent in, the format is adjusted to "array1value[0]=array2value[0],array1value[1]=array2value[1]"
-	function commaSeparate($array,$array2=null){
+	function commaSeparate($array,$type="select",$array2=null){
 		$commaList="";
 		if($array2==null){
-			$commaList = implode(', ', $array);
+			if($type=="insert"){
+				$commaList = implode("','", $array);
+			}else{
+				$commaList = implode(', ', $array);	
+			}
 		}else{
 			$new_array = array_merge($array1,$array2);	
 			$array_size=count($new_array);
@@ -71,10 +75,10 @@ class DB{
 			return $query;
 		}else if ($type=="insert"){
 			$query = $query . "insert into " . $table . " ";
-			$query = $query . "(" . $this->commaSeparate($columns) . ") values (" . $this->commaSeparate($values) . ")";
+			$query = $query . "(" . $this->commaSeparate($columns) . ") values ('" . $this->commaSeparate($values,"insert") . "')";
 			return $query;
 		}else if($type == "update"){
-			$query = $query . "update " . $table . " set ". $this->commaSeparate($columns,$values) . " " . $where;
+			$query = $query . "update " . $table . " set ". $this->commaSeparate($columns,"update",$values) . " " . $where;
 			 return $query;
 		}else{
 			echo "true";
@@ -114,7 +118,7 @@ class DB{
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();
-			return $e->getMessage();
+			return false;
 		}
 	}
 	function updateData($table,$columns,$values,$where=null){

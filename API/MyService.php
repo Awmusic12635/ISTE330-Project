@@ -77,9 +77,63 @@
 		    $str = '';
 		    $max = mb_strlen($keyspace, '8bit') - 1;
 		    for ($i = 0; $i < $length; ++$i) {
-		        $str .= $keyspace[random_int(0, $max)];
+		        $str .= $keyspace[rand(0, $max)];
 		    }
 		    return $str;
+		}
+		function stringOnly($arr){
+			foreach ($arr as $key => $value) {
+				if (is_int($key)) {
+					unset($arr[$key]);
+    			}elseif (is_array($arr[$key])){
+	    			$this->stringOnly($arr[$key]);
+    			}	
+			}	
+			return $arr;
+		}
+		protected function paper($args,$params){
+			//Paper
+			if(count($args) ==0 && $this->method=="GET"){
+				$conn = new DB();
+				if($conn->connect("localhost","finalProject","root","final")){
+					//Paper?Title=something
+					if(isset($params["Title"])){
+						$filtered_paper_list= array();
+						foreach($this->papers_list as $paper_id => $paper){
+							if(strpos($paper["Title"], $params["Title"]) !== false){
+								//echo "hi";
+								$filtered_paper_list[$paper_id]=$paper;
+							}
+						}
+						return $filtered_paper_list;	
+					}else{
+						$columns = array("paper_id","abstract","citation","current_people","max_people");
+						$data = $conn->getData("papers",$columns);
+						
+						/*$fixedData = array();
+						for($x=0;x<count($data);$x++){
+							$fixedData[$data[$x]['paper_id']]=array();
+							foreach ($data[$x] as $key => $value){
+								if(is_string($key)){
+									$fixedData[$data[$x]['paper_id']][$key]=$value;
+								}
+							}
+							
+						}*/
+						
+						return $data;
+						//$list = array();
+					
+						//return $this->papers_list;	
+					}
+				}else{
+					return parent::_response("Failed to connect to DB",500);
+				}
+			}
+			//Paper/{id}
+			if(count($args) ==1 && $this->method=="GET"){
+				return $this->papers_list[$args[0]];
+			}
 		}
 		protected function login($args,$params){
 			//Login
@@ -90,22 +144,22 @@
 					if($conn->connect("localhost","finalProject","root","final")){
 						//var_dump($this->request);
 						$fields = array("user_id","username","password");
-						$data = $conn->getData("users",$fields,"username='"+$this->request['username']+"'");
-						return var_dump($data);
+						$username = $this->request['username'];
+						$data = $conn->getData("users",$fields,"username='" .$username. "'");
 						if($data[0]["password"]==$this->request['password']){
-							$access = random_str(50);
+							$access = $this->random_str(50);
 							$columns = array("access","uid");
 							$values = array($access,$data[0]["user_id"]);
-							return $conn->insertData("sessions",$columns,$values);
-							//if($conn->insertData("sessions",$columns,$values)){
-							//	return array(
-							//		"status"=>"logged in",
-							//		"uid"=>$data[0]["user_id"],
-							//		"accesshash"=>$access,
-							//	);
-							//}else{
-							//	return parent::_response("Failed to add user session",500);
-							//}
+							//return $conn->insertData("sessions",$columns,$values);
+							if($conn->insertData("sessions",$columns,$values)){
+								return array(
+									"status"=>"logged in",
+									"uid"=>$data[0]["user_id"],
+									"accesshash"=>$access,
+								);
+							}else{
+								return parent::_response("Failed to add user session",500);
+							}
 						}else{
 							return parent::_response("Invalid Login",403);
 						}
@@ -118,28 +172,6 @@
 				
 			}else{
 				return parent::_response("Incorrect login format or nothing sent",400);
-			}
-		}
-		protected function paper($args,$params){
-			//Paper
-			if(count($args) ==0 && $this->method=="GET"){
-				//Paper?Title=something
-				if(isset($params["Title"])){
-					$filtered_paper_list= array();
-					foreach($this->papers_list as $paper_id => $paper){
-						if(strpos($paper["Title"], $params["Title"]) !== false){
-							//echo "hi";
-							$filtered_paper_list[$paper_id]=$paper;
-						}
-					}
-					return $filtered_paper_list;	
-				}else{
-					return $this->papers_list;	
-				}
-			}
-			//Paper/{id}
-			if(count($args) ==1 && $this->method=="GET"){
-				return $this->papers_list[$args[0]];
 			}
 		}
 		protected function services($args){

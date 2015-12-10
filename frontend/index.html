@@ -270,13 +270,14 @@ cbp-hrmenu {
 				//alert("hi");
 				//build options...
 				var x='<table id="mainsearch" class="display">';
-				x+='<thead><tr><th>Title</th><th>Author</th><th>Description</th><th>Category</th></tr></thead><tbody>';
+				x+='<thead><tr><th>Title</th><th>Author</th><th>Description</th><th>Current People</th><th>Maxgit config --global user.name "Your Name" People</th></tr></thead><tbody>';
 				
 				$.each(data,function(index,element){
-					x+='<tr onclick="makeModal(' + index + ')"><td>'+element.Title+'</td>';
-					x+='<td>'+element.Author+'</td>';
-					x+='<td>'+element.Description+'</td>';
-					x+='<td>'+element.Category+'</td></tr>';
+					x+='<tr onclick="makeModal(' + element.paper_id + ')"><td>'+element.Title+'</td>';
+					x+='<td>'+element.citation+'</td>';
+					x+='<td>'+element.abstract+'</td>';
+					x+='<td>'+element.current_people+'</td>';
+					x+='<td>'+element.max_people+'</td></tr>';
 				});
 
 				x+="</tbody></table>";

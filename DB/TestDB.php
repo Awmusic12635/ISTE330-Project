@@ -3,10 +3,11 @@
 	
 	$conn = new DB();
 	
-	$conn->connect("localhost","finalProject","root","final")
-	$fields = array("user_id","username","password");
-	$data = $conn->getData("users",$fields,"username='AWacker'");
-	echo ($data);
+	$conn->connect("localhost","finalProject","root","final");
+	$access = "test";
+	$columns = array("access","uid");
+	$values = array($access,$data[0]["user_id"]);
+	echo $conn->insertData("sessions",$columns,$values);
 	
 
 ?>
