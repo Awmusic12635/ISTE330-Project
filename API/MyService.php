@@ -82,9 +82,9 @@
 		    return $str;
 		}
 		protected function login($args,$params){
-			return var_dump($this->request);
+			//return var_dump($this->request);
 			//Login
-			if(count($args) ==0 && $this->method=="POST"){
+			if($this->method=="POST"){
 				if(isset($this->request['user']) && isset($this->request['password'])){
 					$conn = new DB();
 	
