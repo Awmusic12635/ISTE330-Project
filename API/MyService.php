@@ -1,5 +1,6 @@
 <?php
 	require_once("RestService.class.php");	
+	require_once("../DB/DB.php");
 	
 	class MyService extends RestService{
 		//normally we would have a connection to a data store i.e. db
@@ -71,6 +72,48 @@
 						"Category"=>"Facts",
 					),
 			);
+		}
+		function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'){
+		    $str = '';
+		    $max = mb_strlen($keyspace, '8bit') - 1;
+		    for ($i = 0; $i < $length; ++$i) {
+		        $str .= $keyspace[random_int(0, $max)];
+		    }
+		    return $str;
+		}
+		protected function login($args,$params){
+			//return "hello";
+			//Login
+			if(count($args) ==0 && $this->method=="POST"){
+				if(isset($this->request['user']) && isset($this->request['password'])){
+					$conn = new DB();
+	
+					$conn->connect("localhost","finalProject","root","final");
+					$fields = array("user_id","username","password");
+					$data = $conn->getData("users",$fields," where username="+$this->request['username']);
+					if($data[0]["password"]==$this->request['password']){
+						$access = random_str(50);
+						$columns = array("access","uid");
+						$values = array($access,$data[0]["user_id"]);
+						if($conn->insertData("sessions",$columns,$values)){
+							return array(
+								"status"=>"logged in",
+								"uid"=>$data[0]["user_id"],
+								"accesshash"=>$access,
+							);
+						}else{
+							return parent::_response("Failed to add user session",500);
+						}
+					}else{
+						return parent::_response("Invalid Login",403);
+					}
+				}else{
+					return parent::_response("User or password not supplied",400);
+				}
+				
+			}else{
+				return parent::_response("Incorrect login format or nothing sent",400);
+			}
 		}
 		protected function paper($args,$params){
 			//Paper
