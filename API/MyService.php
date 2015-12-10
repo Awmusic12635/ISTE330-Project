@@ -108,9 +108,11 @@
 						return parent::_response("Invalid Login",403);
 					}
 				}else{
-					return parent::_response("User or password not supplied",403);
+					return parent::_response("User or password not supplied",400);
 				}
 				
+			}else{
+				return parent::_response("Incorrect login format or nothing sent",400);
 			}
 		}
 		protected function paper($args,$params){
