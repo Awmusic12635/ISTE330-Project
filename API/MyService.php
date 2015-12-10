@@ -82,7 +82,7 @@
 		    return $str;
 		}
 		protected function login($args,$params){
-			return "hello";
+			//return "hello";
 			//Login
 			if(count($args) ==0 && $this->method=="POST"){
 				if(isset($this->request['user']) && isset($this->request['password'])){
@@ -99,7 +99,7 @@
 							return array(
 								"status"=>"logged in",
 								"uid"=>$data[0]["user_id"],
-								"accesshash"=>$access;
+								"accesshash"=>$access,
 							)
 						}else{
 							return parent::_response("Failed to add user session",500);
