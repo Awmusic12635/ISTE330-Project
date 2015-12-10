@@ -82,7 +82,7 @@
 		    return $str;
 		}
 		protected function login($args,$params){
-			//return "hello";
+			return var_dump($this->request);
 			//Login
 			if(count($args) ==0 && $this->method=="POST"){
 				if(isset($this->request['user']) && isset($this->request['password'])){
