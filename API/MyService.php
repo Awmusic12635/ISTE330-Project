@@ -82,7 +82,7 @@
 		    return $str;
 		}
 		protected function login($args,$params){
-			//return var_dump($this->request);
+			return var_dump($this->request);
 			//Login
 			//return $this->method;
 			if($this->method=="POST"){
