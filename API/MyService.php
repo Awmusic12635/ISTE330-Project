@@ -96,21 +96,21 @@
 							$access = random_str(50);
 							$columns = array("access","uid");
 							$values = array($access,$data[0]["user_id"]);
-							return $conn->insertData("sessions",$columns,$values);
-							//if($conn->insertData("sessions",$columns,$values)){
-							//	return array(
-							//		"status"=>"logged in",
-							//		"uid"=>$data[0]["user_id"],
-							//		"accesshash"=>$access,
-							//	);
-							//}else{
-							//	return parent::_response("Failed to add user session",500);
-							//}
+							//return $conn->insertData("sessions",$columns,$values);
+							if($conn->insertData("sessions",$columns,$values)){
+								return array(
+									"status"=>"logged in",
+									"uid"=>$data[0]["user_id"],
+									"accesshash"=>$access,
+								);
+							}else{
+								return parent::_response("Failed to add user session",500);
+							}
 						}else{
 							return parent::_response("Invalid Login",403);
 						}
 					}else{
-						return return parent::_response("Failed to connect to DB",500);
+						return parent::_response("Failed to connect to DB",500);
 					}
 				}else{
 					return parent::_response("User or password not supplied",400);
