@@ -84,9 +84,9 @@
 		protected function login($args,$params){
 			//return var_dump($this->request);
 			//Login
-			return $this->method;
+			//return $this->method;
 			if($this->method=="POST"){
-				if(isset($this->request['user']) && isset($this->request['password'])){
+				if(isset($this->request['username']) && isset($this->request['password'])){
 					$conn = new DB();
 	
 					$conn->connect("localhost","finalProject","root","final");
