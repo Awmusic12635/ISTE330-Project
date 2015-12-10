@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Admin Panel</title>
+	<link rel = "stylesheet" href = "style.css" />
+</head>
+<body>
+	<ul id = 'navigation'>
+		<li><a href = '#'>Papers</a></li>
+		<li><a href = '#'>People</a></li>
+		<li><a href = '#'>Keywords</a></li>
+	</ul>
+<div id = "panel">
+        <form>
+        	<fieldset>
+        		<legend>Edit Paper</legend>
+			 	<select>
+					<option value="1">TED</option>
+					<option value="2">Think Inside The Box! Optimizing Web Performance Today</option>
+					<option value="3">Work In Progress - Bringing Sanity to the Course Assignment Process</option>
+				</select><br />
+				<label class = 'admin' for = "user-id">User ID: <input type = "text" id = "user-id" name = "user-id" size = "50"><br />
+				<label class = 'admin' for = "paper-id">Paper ID: <input type = "text" id = "paper-id" name = "paper-id" size = "50"><br />
+				<label class = 'admin' for = "abstract">Abstract: <input type = "abstract" id = "abstract" name = "abstract" size = "50"><br />
+				<label class = 'admin' for = "citation">Citation: <input type = "citation" id = "citation" name = "citation" size = "50"><br />
+				<label class = 'admin' for = "keywords">Keywords: <select id = "keywords" size = "5" multiple>
+					<option>cognitive science</option>
+					<option>data mining</option>
+					<option>database</option>
+					<option>human memory</option>
+					<option>C#</option>
+					<option>PHP</option>
+				</select><br />
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>
