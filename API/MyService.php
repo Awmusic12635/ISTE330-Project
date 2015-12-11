@@ -369,6 +369,7 @@
 		protected function login($args,$params){
 			//Login
 			if($this->method=="POST"){
+				//return "hello";
 				//return var_dump($params);
 				if(isset($params['Access'])){
 					
@@ -383,10 +384,11 @@
 						
 					}else{
 						//failed to get info from DB
-						//return parent::_response("Failed to session info",500);
+						return parent::_response("Failed to session info",500);
 					}
 				}
 				if(isset($this->request['username']) && isset($this->request['password'])){
+					//return {Something:"hello"};
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						//var_dump($this->request);
