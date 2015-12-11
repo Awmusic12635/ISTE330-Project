@@ -129,12 +129,12 @@ class DB{
 			$query = $this->buildQuery("update",$table,$columns,$where,$values);
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
-			
-			return true;
+			$changed = $stmt->rowCount();
+			return $changed;
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();
-			return false;
+			return -1;
 		}
 	}
 	//delete statements to execute against the database, optional where param to further clarify the statement
