@@ -10,6 +10,7 @@
 			parent::__construct($request);
 			//create dummy data store
 		}
+		//Generates a random string 
 		function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'){
 		    $str = '';
 		    $max = mb_strlen($keyspace, '8bit') - 1;
@@ -18,19 +19,11 @@
 		    }
 		    return $str;
 		}
-		function stringOnly($arr){
-			foreach ($arr as $key => $value) {
-				if (is_int($key)) {
-					unset($arr[$key]);
-    			}elseif (is_array($arr[$key])){
-	    			$this->stringOnly($arr[$key]);
-    			}	
-			}	
-			return $arr;
-		}
+		//The entire /Keyword chain for the API
 		protected function keyword($args,$params){
 			//Keyword - GET
 			if(count($args) ==0 && $this->method=="GET"){
+				//Connects to db
 				$conn = new DB();
 				if($conn->connect("localhost","finalProject","root","final")){	
 					//Keyword?Name=somename
@@ -50,7 +43,9 @@
 			}
 			//Keyword/{id} - GET
 			if(count($args) ==1 && $this->method=="GET"){
+				//Verifies that it is an int id
 				if(is_numeric($args[0])){
+					//connect to db
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						$columns = array("keyword_id","keyword");
@@ -65,12 +60,17 @@
 			}	
 			//Keyword/{id} - PUT
 			if(count($args) ==1 && $this->method=="PUT"){
+				//Verifies that it is an int id
 				if(is_numeric($args[0])){
+					//Verifies the required send in values are there
 					if(isset($this->file['keyword'])){
+						//Connect to db
 						$conn = new DB();
 						if($conn->connect("localhost","finalProject","root","final")){
+							//Prepare for update
 							$columns = array("keyword");
 							$values = array($this->file['keyword']);
+							//Updates and checks # of changed rows
 							$changed = $conn->updateData("keywords",$columns,$values,"keyword_id='".$args[0]."'");
 							if($changed != 0 && $changed != -1){
 								return parent::_response("Updated keyword",202);
@@ -91,12 +91,16 @@
 			}
 			//Keyword - POST
 			if(count($args) ==0 && $this->method=="POST"){
+				//Verifies required send in values are there
 				if(isset($this->request['keyword'])){
+					//connects to db
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
+						//prepares for insert
 						$columns = array("keyword");
 						$values = array($this->request['keyword']);
 						$id = $conn->insertData("keywords",$columns,$values);
+						//as long as the insert didn't fail, return id of the last inserted row
 						if($id != false){
 							return array(
 								"keyword_id"=>$id,
@@ -113,10 +117,13 @@
 			}
 			//Keyword/{id} - DELETE
 			if(count($args) ==1 && $this->method=="DELETE"){
+				//verifies ID sent in is a int
 				if(is_numeric($args[0])){
+					//connect to db
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						$changed = $conn->deleteData("keywords","keyword_id='".$args[0]."'");
+						//Checks # of changed rows to see if it worked
 						if($changed != 0 && $changed != -1){
 							return parent::_response("Deleted keyword",202);
 						}elseif($changed != -1){
@@ -132,12 +139,15 @@
 				}
 			}
 		}
+		//Entire /User API path
 		protected function user($args,$params){
 			//User - GET
 			if(count($args) ==0 && $this->method=="GET"){
+				//Connect to db
 				$conn = new DB();
 				if($conn->connect("localhost","finalProject","root","final")){	
 					//User?Name=somename
+					//verifies required values are sent in and prepares for select
 					if(isset($params["Name"])){
 						$columns = array("user_id","first_name","last_name","username","signup_date","email");
 						$data = $conn->getData("users",$columns,"concat(first_name,' ' ,last_name) like'%".$params["Name"]."%'");

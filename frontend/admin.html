@@ -279,6 +279,16 @@
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
+			if(getStoredValues('accessHash') != -1){
+				$("#loginButton").val('Logout');
+					$('#loginButton').prop('onclick',null).off('click');
+					$('#loginButton').click(function() {
+					   alert("logged out");  
+					   localStorage.clear();
+					   window.location.href="http://final.alexwacker.com/ISTE330-Project/frontend/index.html";
+					});
+			}
+			
 			loadPapers(true);
 		});
 		

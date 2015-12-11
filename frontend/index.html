@@ -183,6 +183,25 @@ cbp-hrmenu {
 	}
 }	
 </style>
+<script>
+				//Function to get stored values in either cookies or local storage for form
+		function getStoredValues(which){
+		   //check if supports local storage
+		   if(window.localStorage){
+		   	if(localStorage.getItem(which)){
+		   	  	return localStorage.getItem(which);	
+		     }else{
+			  return -1;
+		     }
+		   }else{//use cookies if it doesn't
+		   	    if(GetCookie(which)!=null){
+			   	    return GetCookie(which);
+		   	    }else{
+		   	   		return -1;
+		      	}
+		   }
+		}
+</script>
 <script type="text/javascript">
 	var cbpHorizontalMenu = (function() {
 
@@ -233,6 +252,17 @@ cbp-hrmenu {
 	////////////////////////
 	$(document).ready(function()
 	{
+		if(getStoredValues('accessHash') != -1){
+			$("#loginButton").val('Logout');
+				$('#loginButton').prop('onclick',null).off('click');
+				$('#loginButton').click(function() {
+				   alert("logged out");  
+				   localStorage.clear();
+				   window.location.href="http://final.alexwacker.com/ISTE330-Project/frontend/index.html";
+				});
+		}
+		
+		
 		//initial load of papers
 		//load papers
 		loadPapers();
