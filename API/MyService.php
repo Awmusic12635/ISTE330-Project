@@ -157,7 +157,7 @@
 				if(is_numeric($args[0])){
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
-						$columns = array("user_id","first_name","last_name","username","signup_date","email");
+						$columns = array("user_id","first_name","last_name","username","signup_date","email","user_type_id");
 						$data = $conn->getData("users",$columns,"user_id='".$args[0]."'");
 						return $data;
 					}else{
