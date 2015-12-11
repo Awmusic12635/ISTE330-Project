@@ -4,8 +4,328 @@
 	<meta charset="utf-8" />
 	<title>Faculty Admin Page</title>
 	<link rel = "stylesheet" href = "style.css" />
+	<script src='http://code.jquery.com/jquery-latest.js' type="text/javascript"></script>
+	<script src='http://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js' type="text/javascript"></script>
+	<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js' type="text/javascript"></script>
+	<script src='spin.min.js' type="text/javascript"></script>
+	<script src='jquery.spin.js' type="text/javascript"></script>
+	<script src='bootbox.min.js' type="text/javascript"></script>
+	<script src='http://cdn.jsdelivr.net/jquery.validation/1.13.1/jquery.validate.min.js' type="text/javascript"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css">
+	<style>
+		#search{
+			height:40px;
+			font-size: 15pt;
+		}
+		#content{
+			position: relative;
+			top: 50%;
+			left: 50%;
+			margin-left: -200px;
+		}
+		body{
+			background-color: #f0f0f0;
+		}
+		.pointer{
+			cursor:pointer;
+		}
+		.modal-body{
+			min-height: 600px;
+			overflow-y: auto;
+		}
+		#loginButton {
+		color: #fff;
+		background-color: #6496c8;
+		text-shadow: -1px 1px #417cb8;
+		border: none;
+		position:absolute; 
+		top:0; 
+		right:0;
+		}
+	</style>
+	<style>
+	cbp-hrmenu {
+		width: 100%;
+		margin-top: 2em;
+		border-bottom: 4px solid #47a3da;
+	}
+	
+	/* general ul style */
+	.cbp-hrmenu ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	
+	/* first level ul style */
+	.cbp-hrmenu > ul,
+	.cbp-hrmenu .cbp-hrsub-inner {
+		width: 90%;
+		max-width: 70em;
+		margin: 0 auto;
+		padding: 0 1.875em;
+	}
+	
+	.cbp-hrmenu > ul > li {
+		display: inline-block;
+	}
+	
+	.cbp-hrmenu > ul > li > a {
+		font-weight: 700;
+		padding: 1em 2em;
+		color: #999;
+		display: inline-block;
+	}
+	
+	.cbp-hrmenu > ul > li > a:hover {
+		color: #47a3da;
+	}
+	
+	.cbp-hrmenu > ul > li.cbp-hropen a,
+	.cbp-hrmenu > ul > li.cbp-hropen > a:hover {
+		color: #fff;
+		background: #47a3da;
+	}
+	
+	/* sub-menu */
+	.cbp-hrmenu .cbp-hrsub {
+		display: none;
+		position: absolute;
+		background: #47a3da;
+		width: 100%;
+		left: 0;
+	}
+	
+	.cbp-hropen .cbp-hrsub {
+		display: block;
+		padding-bottom: 3em;
+	}
+	
+	.cbp-hrmenu .cbp-hrsub-inner > div {
+		width: 33%;
+		float: left;
+		padding: 0 2em 0;
+	}
+	
+	.cbp-hrmenu .cbp-hrsub-inner:before,
+	.cbp-hrmenu .cbp-hrsub-inner:after {
+		content: " ";
+		display: table;
+	}
+	
+	.cbp-hrmenu .cbp-hrsub-inner:after {
+		clear: both;
+	}
+	
+	.cbp-hrmenu .cbp-hrsub-inner > div a {
+		line-height: 2em;
+	}
+	
+	.cbp-hrsub h4 {
+		color: #afdefa;
+		padding: 2em 0 0.6em;
+		margin: 0;
+		font-size: 160%;
+		font-weight: 300;
+	}
+	
+	/* Examples for media queries */
+	
+	@media screen and (max-width: 52.75em) { 
+	
+		.cbp-hrmenu {
+			font-size: 80%;
+		}
+	
+	}
+	
+	@media screen and (max-width: 43em) { 
+	
+		.cbp-hrmenu {
+			font-size: 120%;
+			border: none;
+		}
+	
+		.cbp-hrmenu > ul,
+		.cbp-hrmenu .cbp-hrsub-inner {
+			width: 100%;
+			padding: 0;
+		}
+	
+		.cbp-hrmenu .cbp-hrsub-inner {
+			padding: 0 2em;
+			font-size: 75%;
+		}
+	
+		.cbp-hrmenu > ul > li {
+			display: block;
+			border-bottom: 4px solid #47a3da;
+		}
+	
+		.cbp-hrmenu > ul > li > a { 
+			display: block;
+			padding: 1em 3em;
+		}
+	
+		.cbp-hrmenu .cbp-hrsub { 
+			position: relative;
+		}
+	
+		.cbp-hrsub h4 {
+			padding-top: 0.6em;
+		}
+	
+	}
+	
+	@media screen and (max-width: 36em) { 
+		.cbp-hrmenu .cbp-hrsub-inner > div {
+			width: 100%;
+			float: none;
+			padding: 0 2em;
+		}
+	}	
+	</style>
+	<script type="text/javascript">
+		var cbpHorizontalMenu = (function() {
+	
+		var $listItems = $( '#cbp-hrmenu > ul > li' ),
+			$menuItems = $listItems.children( 'a' ),
+			$body = $( 'body' ),
+			current = -1;
+	
+		function init() {
+			$menuItems.on( 'click', open );
+			$listItems.on( 'click', function( event ) { event.stopPropagation(); } );
+		}
+	
+		function open( event ) {
+	
+			if( current !== -1 ) {
+				$listItems.eq( current ).removeClass( 'cbp-hropen' );
+			}
+	
+			var $item = $( event.currentTarget ).parent( 'li' ),
+				idx = $item.index();
+	
+			if( current === idx ) {
+				$item.removeClass( 'cbp-hropen' );
+				current = -1;
+			}
+			else {
+				$item.addClass( 'cbp-hropen' );
+				current = idx;
+				$body.off( 'click' ).on( 'click', close );
+			}
+	
+			return false;
+	
+		}
+	
+		function close( event ) {
+			$listItems.eq( current ).removeClass( 'cbp-hropen' );
+			current = -1;
+		}
+	
+		return { init : init };
+	
+		})();
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function()
+		{
+			loadPapers();
+		});
+		
+		var firstTime = 'true';
+		//Do main search
+		function loadPapers()
+		{
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/Paper'},
+				dataType:'json',
+				success:function(data)
+				{
+					//add options from database if first time method is called
+					if(firstTime == 'true')
+					{
+						$.each(data,function(index,element)
+						{
+							var optEle = document.createElement('option');
+							var val = element.paper_id;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.title));
+							document.getElementById("paperselect").appendChild(optEle);
+						});
+						firstTime = 'false';
+					}
+					//populate form
+					for(var i=0; i<document.getElementById("paperselect").childNodes.length; i++)
+					{
+						if(document.getElementById("paperselect").childNodes[i].selected)
+						{
+							$.ajax({
+								type:'get',
+								url:'proxy.php',
+								async:true,
+								cache:false,
+								data:{path:'/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value")},
+								dataType:'json',
+								success:function(data)
+								{
+									$.each(data,function(index,element)
+									{
+										document.getElementById("paper-id").value = element.paper_id;
+										document.getElementById("abstract").value = element.abstract;
+										document.getElementById("citation").value = element.citation;
+										document.getElementById("paper-id").value = element.paper_id;
+									});
+								},
+								error:function(jqXHR, textStatus, errorThrown) 
+								{
+									//console.dir(jqXHR);
+								}
+							});
+						}
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir(jqXHR);
+				}
+			});
+		}
+		
+		function killSelect(which)
+		{
+			//While there is a next sibling...
+			while(which.nextSibling)
+			{
+				//...kill it
+				document.getElementById("paperselect").removeChild(which.nextSibling);
+			}			
+		}
+		
+		function addPaper()
+		{
+			
+		}
+	</script>
 </head>
 <body>
+	<input value="Login" id="loginButton" class="button" type="button" onclick="window.location='login.html';">
+	<h1 style="padding-left: 645px;">Admin Page</h1>
+<nav id="cbp-hrmenu" class="cbp-hrmenu">
+	<ul>
+		<li><a href="index.html">Search Database</a></li>
+		<li><a href="admin.html">Faculty Admin</a></li>
+		<!-- ... -->
+	</ul>
+</nav>
 	<ul id = 'navigation'>
 		<li><a href = '#'>Papers</a></li>
 		<li><a href = '#'>People</a></li>
@@ -15,12 +335,8 @@
         <form>
         	<fieldset>
         		<legend>Edit Paper</legend>
-			 	<select>
-					<option value="1">TED</option>
-					<option value="2">Think Inside The Box! Optimizing Web Performance Today</option>
-					<option value="3">Work In Progress - Bringing Sanity to the Course Assignment Process</option>
+			 	<select id="paperselect" onchange="loadPapers();">
 				</select><br />
-				<label class = 'admin' for = "user-id">User ID: <input type = "text" id = "user-id" name = "user-id" size = "50"><br />
 				<label class = 'admin' for = "paper-id">Paper ID: <input type = "text" id = "paper-id" name = "paper-id" size = "50"><br />
 				<label class = 'admin' for = "abstract">Abstract: <input type = "abstract" id = "abstract" name = "abstract" size = "50"><br />
 				<label class = 'admin' for = "citation">Citation: <input type = "citation" id = "citation" name = "citation" size = "50"><br />
