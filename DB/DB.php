@@ -116,7 +116,7 @@ class DB{
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			
-			return true;
+			return $dbh->lastInsertId();
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();

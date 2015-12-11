@@ -144,7 +144,25 @@
 			}
 			//Paper - POST
 			if(count($args) ==0 && $this->method=="POST"){
-				
+				if(isset($this->request['abstract']) && isset($this->request['title']) && isset($this->request['citation']) && isset($this->request['max_people']) && isset($this->request['current_people'])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("title","abstract","citation","current_people","max_people");
+						$values = array($this->request['title'],$this->request['abstract'],$this->request['citation'],$this->request['current_people'],$this->request['max_people']);
+						$id == $conn->insertData("papers",$columns,$values)
+						if($id != false){
+							return array(
+								"paper_id"=>$id,
+							);
+						}else{
+							return parent::_response("Failed to add new paper",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Required values not passed",400);
+				}
 			}
 			
 			
