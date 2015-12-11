@@ -28,6 +28,110 @@
 			}	
 			return $arr;
 		}
+		protected function keyword($args,$params){
+			//Keyword - GET
+			if(count($args) ==0 && $this->method=="GET"){
+				$conn = new DB();
+				if($conn->connect("localhost","finalProject","root","final")){	
+					//Keyword?Name=somename
+					if(isset($params["Name"])){
+						$columns = array("keyword_id","keyword");
+						$data = $conn->getData("keywords",$columns,"keyword like'%".$params["Name"]."%'");
+							return $data;
+					}else{
+						$columns = array("keyword_id","keyword");
+						$data = $conn->getData("keywords",$columns);
+						
+						return $data;
+					}
+				}else{
+					return parent::_response("Failed to connect to DB",500);
+				}	
+			}
+			//Keyword/{id} - GET
+			if(count($args) ==1 && $this->method=="GET"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("keyword_id","keyword");
+						$data = $conn->getData("keywords",$columns,"keyword_id='".$args[0]."'");
+						return $data;
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a user id",400);
+				}
+			}	
+			//Keyword/{id} - PUT
+			if(count($args) ==1 && $this->method=="PUT"){
+				if(is_numeric($args[0])){
+					if(isset($this->file['keyword'])){
+						$conn = new DB();
+						if($conn->connect("localhost","finalProject","root","final")){
+							$columns = array("keyword");
+							$values = array($this->file['keyword']);
+							$changed = $conn->updateData("keywords",$columns,$values,"keyword_id='".$args[0]."'");
+							if($changed != 0 && $changed != -1){
+								return parent::_response("Updated keyword",202);
+							}elseif($changed != -1){
+								return parent::_response("No keyword by that ID",404);
+							}else{
+								return parent::_response("Failed to update keyword",500);
+							}
+						}else{
+							return parent::_response("Failed to connect to db",500);
+						}
+					}else{
+						return parent::_response("Required values not passed",400);
+					}
+				}else{
+					return parent::_response("Must send a keyword id",400);
+				}
+			}
+			//Keyword - POST
+			if(count($args) ==0 && $this->method=="POST"){
+				if(isset($this->request['keyword'])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("keyword");
+						$values = array($this->request['keyword']);
+						$id = $conn->insertData("keywords",$columns,$values);
+						if($id != false){
+							return array(
+								"keyword_id"=>$id,
+							);
+						}else{
+							return parent::_response("Failed to add new keyword",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Required values not passed",400);
+				}
+			}
+			//Keyword/{id} - DELETE
+			if(count($args) ==1 && $this->method=="DELETE"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$changed = $conn->deleteData("keywords","keyword_id='".$args[0]."'");
+						if($changed != 0 && $changed != -1){
+							return parent::_response("Deleted keyword",202);
+						}elseif($changed != -1){
+							return parent::_response("No keyword by that ID",404);
+						}else{
+							return parent::_response("Failed to delete keyword",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a keyword id",400);
+				}
+			}
+		}
 		protected function user($args,$params){
 			//User - GET
 			if(count($args) ==0 && $this->method=="GET"){
