@@ -149,7 +149,7 @@
 					if($conn->connect("localhost","finalProject","root","final")){
 						$columns = array("title","abstract","citation","current_people","max_people");
 						$values = array($this->request['title'],$this->request['abstract'],$this->request['citation'],$this->request['current_people'],$this->request['max_people']);
-						$id == $conn->insertData("papers",$columns,$values)
+						$id = $conn->insertData("papers",$columns,$values);
 						if($id != false){
 							return array(
 								"paper_id"=>$id,

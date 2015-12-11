@@ -113,6 +113,7 @@ class DB{
 			$where=null;
 			$dbh = $this->getConnection();
 			$query = $this->buildQuery("insert",$table,$columns,$where,$values);
+			//echo $query;
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			
@@ -127,7 +128,6 @@ class DB{
 		try{
 			$dbh = $this->getConnection();
 			$query = $this->buildQuery("update",$table,$columns,$where,$values);
-			echo $query;
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			
