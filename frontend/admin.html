@@ -307,15 +307,14 @@
 			{
 				if(document.getElementById("paperselect").childNodes[i].selected)
 				{
-					var obj = {'title': document.getElementById("title").value, 'abstract': document.getElementById("abstract").value, 'citation': document.getElementById("citation").value, 'current_people': document.getElementById("currentnum").value, 'max_people': document.getElementById("maxnum").value};
-					console.log(obj);
+					var obj = {'title': document.getElementById("title").value, 'abstract': document.getElementById("abstract").value, 'citation': document.getElementById("citation").value, 'current_people': document.getElementById("currentnum").value, 'max_people': document.getElementById("maxnum").value}
 					$.ajax({
 						type:'put',
-						url:encodeURI('http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value")),
+						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value"),
 						async:true,
 						cache:false,
-						data: JSON.stringify(obj),
-						contentType:'application/json',
+						data: obj,
+						//contentType:'application/json',
 						success:function(data)
 						{
 							
