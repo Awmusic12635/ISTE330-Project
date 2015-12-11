@@ -164,12 +164,26 @@
 					return parent::_response("Required values not passed",400);
 				}
 			}
-			
-			
-			
-			
 			//Paper/{id} - DELETE
-			
+			if(count($args) ==1 && $this->method=="DELETE"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$changed = $conn->deleteData("papers","paper_id='".$args[0]."'");
+						if($changed != 0 && $changed != -1){
+							return parent::_response("Deleted paper",202);
+						}elseif($changed != -1){
+							return parent::_response("No paper by that ID",404);
+						}else{
+							return parent::_response("Failed to delete paper",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id",400);
+				}
+			}
 			
 			
 		}
@@ -188,7 +202,6 @@
 							$access = $this->random_str(50);
 							$columns = array("access","uid");
 							$values = array($access,$data[0]["user_id"]);
-							//return $conn->insertData("sessions",$columns,$values);
 							if($conn->insertData("sessions",$columns,$values)){
 								return array(
 									"status"=>"logged in",
@@ -212,47 +225,6 @@
 				return parent::_response("Incorrect login format or nothing sent",400);
 			}
 		}
-		protected function services($args){
-			if($args[0] == "Beers"){
-				array_shift($args);
-				return $this->beers($args);
-			}else{
-				$method_names = array(
-					"Array getServices()",
-					"Array getBeers()".
-					"String getCheapest()",
-					"String getCostliest()",
-					"String getBeer()",
-				);	
-				return json_encode($method_names);
-			}
-		}
-		/*protected function beers($args){
-			if(count($args) ==0 && $this->method=="GET"){
-				// /Beers
-				$name_list = $this->getNames();
-				
-				return json_encode($name_list);
-			}else if (count($args) == 1 && $this->method=="GET"){
-				//Beers/Cheapest
-				if($args[0] == "Cheapest"){
-					return json_encode($this->getCheapest());
-				}
-				//Beers/Costliest
-				else if ($args[0] == "Costliest"){
-					return json_encode($this->getCostliest());
-				}
-				//Beers/{name}
-				else{
-					$price="";
-					if(array_key_exists($args[0],$this->beers_list)){
-						$price = $this->beers_list[$args[0]];	
-						return json_encode($price);
-					}
-					return parent::_response("Requested Resource Doesn't Exist",404);
-				}
-			}
-		}*/
 	}// end of class
 	//create the service
 	try{

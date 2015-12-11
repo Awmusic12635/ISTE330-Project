@@ -83,7 +83,6 @@ class DB{
 			}
 			 return $query;
 		}else{
-			echo "true";
 			$query = $query . "delete from " . $table;
 			
 			if($where !=null){
@@ -146,12 +145,12 @@ class DB{
 			$query = $this->buildQuery("delete",$table,$columns,$where);
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
-			
-			return true;
+			$changed = $stmt->rowCount();
+			return $changed;
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();
-			return false;
+			return -1;
 		}
 	}
 }
