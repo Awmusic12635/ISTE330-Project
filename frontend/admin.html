@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Faculty Admin Page</title>
+	<title>Faculty Admin Page</title> 
 	<link rel = "stylesheet" href = "style.css" />
 	<script src='http://code.jquery.com/jquery-latest.js' type="text/javascript"></script>
 	<script>
@@ -279,12 +279,11 @@
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
-			loadPapers();
+			loadPapers(true);
 		});
 		
-		var firstTime = 'true';
 		//Do main search
-		function loadPapers()
+		function loadPapers(firstTime)
 		{
 			$.ajax({
 				type:'get',
@@ -295,9 +294,13 @@
 				dataType:'json',
 				success:function(data)
 				{
+
 					//add options from database if first time method is called
-					if(firstTime == 'true')
+					if(firstTime == true)
 					{
+						$("#deleteselect").html('');
+						$("#paperselect").html('');
+						
 						$.each(data,function(index,element)
 						{
 							//fill edit select menu
@@ -313,7 +316,7 @@
 							optEle2.appendChild(document.createTextNode(element.title));
 							document.getElementById("deleteselect").appendChild(optEle2);
 						});
-						firstTime = 'false';
+						//firstTime = 'false';
 					}
 					//populate edit form
 					for(var i=0; i<document.getElementById("paperselect").childNodes.length; i++)
@@ -369,11 +372,11 @@
 						//contentType:'application/json',
 						success:function(data)
 						{
-
+								alert("Paper Updated");
 						},
 						error:function(jqXHR, textStatus, errorThrown) 
 						{
-							//console.dir(jqXHR);
+							alert("Paper Updated");
 						}
 					});
 				}
@@ -392,8 +395,8 @@
 				//contentType:'application/json',
 				success:function(data)
 				{
-					firstTime = true;
-					loadPapers();
+					alert("Paper Added");
+					loadPapers(true);
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
@@ -416,12 +419,12 @@
 						//contentType:'application/json',
 						success:function(data)
 						{
-							firstTime = true;
-							loadPapers();
+							loadPapers(true);
 						},
 						error:function(jqXHR, textStatus, errorThrown) 
 						{
-							//console.dir(jqXHR);
+							alert("Paper deleted");
+							loadPapers(true);
 						}
 					});
 				}
