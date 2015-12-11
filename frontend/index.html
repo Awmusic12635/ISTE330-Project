@@ -273,7 +273,7 @@ cbp-hrmenu {
 				x+='<thead><tr><th>Title</th><th>Author</th><th>Description</th><th>Current People</th><th>Max People</th></tr></thead><tbody>';
 				
 				$.each(data,function(index,element){
-					x+='<tr onclick="makeModal(' + element.paper_id + ')"><td>'+element.Title+'</td>';
+					x+='<tr onclick="makeModal(' + element.paper_id + ')"><td>'+element.title+'</td>';
 					x+='<td>'+element.citation+'</td>';
 					x+='<td>'+element.abstract+'</td>';
 					x+='<td>'+element.current_people+'</td>';
@@ -307,7 +307,7 @@ cbp-hrmenu {
 				$.each(data,function(index,element)
 				{
 					console.log(element);
-					x += '<h1>Title: ' + element.Title + '</h1>';
+					x += '<h1>Title: ' + element.title + '</h1>';
 					x += '<h1>Author: ' + element.citation + '</h1>';
 					x += '<h1>Abstract: ' + element.abstract + '</h1>';
 					x += '<h1>Current Number of Collaborators: ' + element.current_people + '</h1>';
