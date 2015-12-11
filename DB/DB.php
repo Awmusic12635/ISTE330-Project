@@ -51,11 +51,10 @@ class DB{
 			}else{
 				$commaList = implode(', ', $array);	
 			}
-		}else{
-			$new_array = array_merge($array1,$array2);	
-			$array_size=count($new_array);
-			for($x=0;$x<$new_array;$x+=2){
-				$commaList = $commandList . $new_array[$x] . "=" . $new_array[$x+1] . ",";
+		}else{	
+			$array_size=count($array);
+			for($x=0;$x<$array_size;$x++){
+				$commaList = $commaList . $array[$x] . "='" . $array2[$x] . "',";
 			}
 		}
 		$commaList = trim($commaList, ',');	
@@ -78,7 +77,10 @@ class DB{
 			$query = $query . "(" . $this->commaSeparate($columns) . ") values ('" . $this->commaSeparate($values,"insert") . "')";
 			return $query;
 		}else if($type == "update"){
-			$query = $query . "update " . $table . " set ". $this->commaSeparate($columns,"update",$values) . " " . $where;
+			$query = $query . "update " . $table . " set ". $this->commaSeparate($columns,"update",$values);
+			if($where !=null){
+				$query = $query . " where " . $where;
+			}
 			 return $query;
 		}else{
 			echo "true";
@@ -125,6 +127,7 @@ class DB{
 		try{
 			$dbh = $this->getConnection();
 			$query = $this->buildQuery("update",$table,$columns,$where,$values);
+			echo $query;
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			

@@ -40,7 +40,8 @@
 	    			break;
 	    		case 'PUT':
 	    			$this->request = $this->_cleanInputs($_GET);
-	    			$this->file = file_get_contents("php://input");
+	    			//make this actually usable
+	    			parse_str(file_get_contents("php://input"),$this->file);
 	    			break;
 	    		default:
 	    			$this->_response('Invalid Method',405);

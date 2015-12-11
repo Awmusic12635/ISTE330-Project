@@ -4,10 +4,9 @@
 	$conn = new DB();
 	
 	$conn->connect("localhost","finalProject","root","final");
-	$access = "test";
-	$columns = array("access","uid");
-	$values = array($access,$data[0]["user_id"]);
-	echo $conn->insertData("sessions",$columns,$values);
+	$columns = array("title","abstract","citation","current_people","max_people");
+	$values = array("What is life?","The abstract of life","Professor Alex","1","3");
+	$conn->updateData("papers",$columns,$values,"paper_id='1'")
 	
 
 ?>

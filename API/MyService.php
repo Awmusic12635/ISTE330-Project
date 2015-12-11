@@ -92,7 +92,7 @@
 			return $arr;
 		}
 		protected function paper($args,$params){
-			//Paper
+			//Paper - GET
 			if(count($args) ==0 && $this->method=="GET"){
 				$conn = new DB();
 				if($conn->connect("localhost","finalProject","root","final")){
@@ -111,7 +111,7 @@
 					return parent::_response("Failed to connect to DB",500);
 				}
 			}
-			//Paper/{id}
+			//Paper/{id} - GET
 			if(count($args) ==1 && $this->method=="GET"){
 				$conn = new DB();
 				if($conn->connect("localhost","finalProject","root","final")){
@@ -122,6 +122,38 @@
 					return parent::_response("Failed to connect to DB",500);
 				}
 			}
+			//Paper/{id} - PUT
+			if(count($args) ==1 && $this->method=="PUT"){
+				
+				if(isset($this->file['abstract']) && isset($this->file['title']) && isset($this->file['citation']) && isset($this->file['max_people']) && isset($this->file['current_people'])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("title","abstract","citation","current_people","max_people");
+						$values = array($this->file['title'],$this->file['abstract'],$this->file['citation'],$this->file['current_people'],$this->file['max_people']);
+						if($conn->updateData("papers",$columns,$values,"paper_id='".$args[0]."'")){
+							return parent::_response("Successfully Updated",204);
+						}else{
+							return parent::_response("Failed to update paper",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Required values not passed",400);
+				}
+			}
+			//Paper - POST
+			if(count($args) ==0 && $this->method=="POST"){
+				
+			}
+			
+			
+			
+			
+			//Paper/{id} - DELETE
+			
+			
+			
 		}
 		protected function login($args,$params){
 			//Login
