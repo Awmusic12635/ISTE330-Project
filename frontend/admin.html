@@ -310,7 +310,7 @@
 					var obj = {'title': document.getElementById("title").value, 'abstract': document.getElementById("abstract").value, 'citation': document.getElementById("citation").value, 'current_people': document.getElementById("currentnum").value, 'max_people': document.getElementById("maxnum").value}
 					$.ajax({
 						type:'put',
-						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value"),
+						url:encodeURI('http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value")),
 						async:true,
 						cache:false,
 						data: JSON.stringify(obj),
