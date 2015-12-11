@@ -32,6 +32,7 @@
 	    		case 'DELETE':
 	    		case 'POST':
 	    			$this->request = $this->_cleanInputs($_POST);
+	    			$this->request = array_merge($this->request,$this->_cleanInputs($_GET));
 	    			break;
 	    		case 'GET':
 	    			$this->request = $this->_cleanInputs($_GET);

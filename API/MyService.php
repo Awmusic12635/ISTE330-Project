@@ -342,10 +342,50 @@
 				}
 			}
 		}
+		//Check if person is logged in based on access hash
+		//if logged in return their userid
+		//if not return 0 / false
+		function checkIfLoggedIn($accessHash){
+			$conn = new DB();
+			if($conn->connect("localhost","finalProject","root","final")){
+				
+				$fields = array("uid","access");
+				$data = $conn->getData("sessions",$fields,"access='" .$accessHash. "'");
+				
+				//user logged in
+				if(count($data) !=0){
+					return array(
+						"user_id"=>$data[0]['uid'],
+					);
+				}else{
+					//not logged in
+					return 0;
+				}
+			}else{
+				//Failed to get data from DB
+				return -1;
+			}
+		}
 		protected function login($args,$params){
 			//Login
-			//return $this->method;
 			if($this->method=="POST"){
+				//return var_dump($params);
+				if(isset($params['Access'])){
+					
+					//access hash was passed to us, check if user is logged in already
+					$result = $this->checkIfLoggedIn ($params['Access']);
+					//$result=$params['Access'];
+					if($result != 0 && $result != -1){
+						//user already logged in
+						return parent::_response("Already logged in",202);
+					}elseif($result != -1){
+						//user is not logged in, continue logging in
+						
+					}else{
+						//failed to get info from DB
+						//return parent::_response("Failed to session info",500);
+					}
+				}
 				if(isset($this->request['username']) && isset($this->request['password'])){
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
