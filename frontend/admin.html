@@ -279,10 +279,11 @@
 								{
 									$.each(data,function(index,element)
 									{
-										document.getElementById("paper-id").value = element.paper_id;
+										document.getElementById("title").value = element.title;
 										document.getElementById("abstract").value = element.abstract;
 										document.getElementById("citation").value = element.citation;
-										document.getElementById("paper-id").value = element.paper_id;
+										document.getElementById("currentnum").value = element.current_people;
+										document.getElementById("maxnum").value = element.max_people;
 									});
 								},
 								error:function(jqXHR, textStatus, errorThrown) 
@@ -300,19 +301,31 @@
 			});
 		}
 		
-		function killSelect(which)
+		function updatePaper()
 		{
-			//While there is a next sibling...
-			while(which.nextSibling)
+			for(var i=0; i<document.getElementById("paperselect").childNodes.length; i++)
 			{
-				//...kill it
-				document.getElementById("paperselect").removeChild(which.nextSibling);
-			}			
-		}
-		
-		function addPaper()
-		{
-			
+				if(document.getElementById("paperselect").childNodes[i].selected)
+				{
+					var obj = {'title': document.getElementById("title").value, 'abstract': document.getElementById("abstract").value, 'citation': document.getElementById("citation").value, 'current_people': document.getElementById("currentnum").value, 'max_people': document.getElementById("maxnum").value}
+					$.ajax({
+						type:'put',
+						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value"),
+						async:true,
+						cache:false,
+						data: JSON.stringify(obj),
+						contentType:'application/json',
+						success:function(data)
+						{
+							
+						},
+						error:function(jqXHR, textStatus, errorThrown) 
+						{
+							//console.dir(jqXHR);
+						}
+					});
+				}
+			}
 		}
 	</script>
 </head>
@@ -337,17 +350,12 @@
         		<legend>Edit Paper</legend>
 			 	<select id="paperselect" onchange="loadPapers();">
 				</select><br />
-				<label class = 'admin' for = "paper-id">Paper ID: <input type = "text" id = "paper-id" name = "paper-id" size = "50"><br />
-				<label class = 'admin' for = "abstract">Abstract: <input type = "abstract" id = "abstract" name = "abstract" size = "50"><br />
-				<label class = 'admin' for = "citation">Citation: <input type = "citation" id = "citation" name = "citation" size = "50"><br />
-				<label class = 'admin' for = "keywords">Keywords: <select id = "keywords" size = "5" multiple>
-					<option>cognitive science</option>
-					<option>data mining</option>
-					<option>database</option>
-					<option>human memory</option>
-					<option>C#</option>
-					<option>PHP</option>
-				</select><br />
+				<label class = 'admin' for = "title">Paper Title: <input type = "text" id = "title" name = "title" size = "50"><br />
+				<label class = 'admin' for = "abstract">Abstract: <input type = "text" id = "abstract" name = "abstract" size = "50"><br />
+				<label class = 'admin' for = "citation">Citation: <input type = "text" id = "citation" name = "citation" size = "50"><br />
+				<label class = 'admin' for = "currentnum">Current Number of People: <input type = "text" id = "currentnum" name = "currentnum" size = "50"><br />
+				<label class = 'admin' for = "currentnum">Maximum Number of People: <input type = "text" id = "maxnum" name = "maxnum" size = "50"><br />
+				<label class = 'admin' for = "updatebutton">Update Paper: <button id="updatebutton" type="button" onclick="updatePaper();">Update</button>
             </fieldset>
         </form>
     </div>
