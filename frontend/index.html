@@ -1,3 +1,7 @@
+<!--
+	This file contains all functionality related to searching the database for records, such as:
+	Interacts with backend API to find specific items from the database
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,7 +188,10 @@ cbp-hrmenu {
 }	
 </style>
 <script>
-				//Function to get stored values in either cookies or local storage for form
+	/*
+		This script checks to see if the user is logged in
+	*/
+		//Function to get stored values in either cookies or local storage for form
 		function getStoredValues(which){
 		   //check if supports local storage
 		   if(window.localStorage){
@@ -203,6 +210,9 @@ cbp-hrmenu {
 		}
 </script>
 <script type="text/javascript">
+	/*
+		This script handles the "looks" of the page, no database functionality here
+	*/
 	var cbpHorizontalMenu = (function() {
 
 	var $listItems = $( '#cbp-hrmenu > ul > li' ),
@@ -249,7 +259,10 @@ cbp-hrmenu {
 </script>
 <script type="text/javascript">
 {
-	////////////////////////
+	/*
+		This script handles the interactions with the backend API
+	*/
+	//displays either login or logout button depending on whether user is logged in or not
 	$(document).ready(function()
 	{
 		if(getStoredValues('accessHash') != -1){
@@ -261,7 +274,6 @@ cbp-hrmenu {
 				   window.location.href="http://final.alexwacker.com/ISTE330-Project/frontend/index.html";
 				});
 		}
-		
 		
 		//initial load of papers
 		//load papers
@@ -320,6 +332,7 @@ cbp-hrmenu {
 		});
 	}
 	
+	//builds modal display when user clicks on a specific paper on the datatable
 	function makeModal(paper)
 	{
 		//Start building the modal
@@ -353,6 +366,7 @@ cbp-hrmenu {
 		});			
 	}
 	
+	//sanitizes input
 	function mysql_real_escape_string(str) 
 	{
 		if(typeof str != 'string')
