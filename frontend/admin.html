@@ -1,3 +1,8 @@
+<!--
+	This file contains all functionality related to faculty administrative abilities, such as:
+	Checks to see if user has proper privileges to be here with session ids or cookies
+	Interacts with backend API to update, delete, or add new items to the database
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +11,10 @@
 	<link rel = "stylesheet" href = "style.css" />
 	<script src='http://code.jquery.com/jquery-latest.js' type="text/javascript"></script>
 	<script>
-			//Function to get stored values in either cookies or local storage for form
+		/*
+			This script checks to see if the user has high enough permissions to be here
+		*/
+		//Function to get stored values in either cookies or local storage for form
 		function getStoredValues(which){
 		   //check if supports local storage
 		   if(window.localStorage){
@@ -24,10 +32,10 @@
 		   }
 		}
 		if(getStoredValues('accessHash') == -1){
-			//User is not logged in
+			//User is not logged in, redirect to login
 			window.location.href="http://final.alexwacker.com/ISTE330-Project/frontend/login.html";
 		}else{
-			//user is logged in. Verify that have the privillages to do so.
+			//User is logged in, verify that they have the privileges to be here
 			$.ajax({
 				type:'get',
 				url:'proxy.php',
@@ -232,6 +240,9 @@
 	}	
 	</style>
 	<script type="text/javascript">
+		/*
+			This script handles the "looks" of the page, no database functionality here
+		*/
 		var cbpHorizontalMenu = (function() {
 	
 		var $listItems = $( '#cbp-hrmenu > ul > li' ),
@@ -277,6 +288,10 @@
 		})();
 	</script>
 	<script type="text/javascript">
+		/*
+			This script handles the interactions with our back end API when the user attempts an action
+		*/
+		//loads papers into select menus when page is loaded
 		$(document).ready(function()
 		{
 			if(getStoredValues('accessHash') != -1){
@@ -292,7 +307,7 @@
 			loadPapers(true);
 		});
 		
-		//Do main search
+		//dynamically loads papers from database into the select menus on the page
 		function loadPapers(firstTime)
 		{
 			$.ajax({
@@ -366,6 +381,7 @@
 			});
 		}
 		
+		//updates a record in the database when update button is clicked
 		function updatePaper()
 		{
 			for(var i=0; i<document.getElementById("paperselect").childNodes.length; i++)
@@ -393,6 +409,7 @@
 			}
 		}
 		
+		//adds a record to the database when the add button is clicked
 		function addPaper()
 		{
 			var obj = {'title': document.getElementById("title2").value, 'abstract': document.getElementById("abstract2").value, 'citation': document.getElementById("citation2").value, 'current_people': document.getElementById("currentnum2").value, 'max_people': document.getElementById("maxnum2").value}
@@ -415,6 +432,7 @@
 			});
 		}
 		
+		//deletes a paper from the database when the delete button is clicked
 		function deletePaper()
 		{
 			for(var i=0; i<document.getElementById("deleteselect").childNodes.length; i++)
