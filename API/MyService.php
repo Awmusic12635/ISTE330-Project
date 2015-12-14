@@ -29,7 +29,7 @@
 					//Keyword?Name=somename
 					if(isset($params["Name"])){
 						$columns = array("keyword_id","keyword");
-						$data = $conn->getData("keywords",$columns,"keyword like'%".$params["Name"]."%'");
+						$data = $conn->getData("keywords",$columns,null,"keyword like'%".$params["Name"]."%'");
 							return $data;
 					}else{
 						$columns = array("keyword_id","keyword");
@@ -49,7 +49,7 @@
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						$columns = array("keyword_id","keyword");
-						$data = $conn->getData("keywords",$columns,"keyword_id='".$args[0]."'");
+						$data = $conn->getData("keywords",$columns,null,"keyword_id='".$args[0]."'");
 						return $data;
 					}else{
 						return parent::_response("Failed to connect to DB",500);
@@ -150,7 +150,7 @@
 					//verifies required values are sent in and prepares for select
 					if(isset($params["Name"])){
 						$columns = array("user_id","first_name","last_name","username","signup_date","email");
-						$data = $conn->getData("users",$columns,"concat(first_name,' ' ,last_name) like'%".$params["Name"]."%'");
+						$data = $conn->getData("users",$columns,null,"concat(first_name,' ' ,last_name) like'%".$params["Name"]."%'");
 							return $data;
 					}else{
 						$columns = array("user_id","first_name","last_name","username","signup_date","email");
@@ -168,7 +168,7 @@
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						$columns = array("user_id","first_name","last_name","username","signup_date","email","user_type_id");
-						$data = $conn->getData("users",$columns,"user_id='".$args[0]."'");
+						$data = $conn->getData("users",$columns,null,"user_id='".$args[0]."'");
 						return $data;
 					}else{
 						return parent::_response("Failed to connect to DB",500);
@@ -177,6 +177,24 @@
 					return parent::_response("Must send a user id",400);
 				}
 			}	
+			//User/{id}/Paper - GET - All papers for user
+			if(count($args) ==2 && $this->method=="GET" && $args[1] == "Paper"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
+						$data = $conn->getData("user_papers",$columns,"join users using(user_id) join papers using(paper_id)","user_id='".$args[0]."'");
+						return $data;
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a user id",400);
+				}
+			}
+			
+			
+			
 			//User/{id} - PUT
 			if(count($args) ==1 && $this->method=="PUT"){
 				if(is_numeric($args[0])){
@@ -259,7 +277,7 @@
 					//Paper?Title=something
 					if(isset($params["Title"])){
 						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
-						$data = $conn->getData("papers",$columns,"title like'%".$params["Title"]."%'");
+						$data = $conn->getData("papers",$columns,null,"title like'%".$params["Title"]."%'");
 							return $data;
 					}else{
 						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
@@ -277,7 +295,7 @@
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
 						$columns = array("paper_id","title","abstract","citation","current_people","max_people");
-						$data = $conn->getData("papers",$columns,"paper_id='".$args[0]."'");
+						$data = $conn->getData("papers",$columns,null,"paper_id='".$args[0]."'");
 						return $data;
 					}else{
 						return parent::_response("Failed to connect to DB",500);
@@ -286,6 +304,106 @@
 					return parent::_response("Must send a paper id",400);
 				}
 			}
+			//Paper/{id}/Keyword - GET - List all keywords of paper
+			if(count($args) ==2 && $this->method=="GET" && $args[1] == "Keyword"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("keyword_id","keyword");
+						$data = $conn->getData("papers_keywords",$columns,"join keywords using(keyword_id) join papers using(paper_id)","paper_id='".$args[0]."'");
+						return $data;
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id",400);
+				}
+			}
+			//Paper/{id}/Keyword/{id} - POST - Add specific keyword to paper
+			if(count($args) ==3 && $this->method=="POST" && $args[1] == "Keyword"){
+				//return "adding keyword " . $args[2] . " to paper " . $args[0];
+				if(is_numeric($args[0]) && is_numeric($args[2])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("keyword_id","paper_id");
+						$values = array($args[2],$args[0]);
+						$id = $conn->insertData("papers_keywords",$columns,$values,true);
+						if($id != false){
+							return parent::_response("keyword added to paper",200);
+						}else{
+							return parent::_response("keyword or paper doesn't exist or is already added",400);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id and keyword id",400);
+				}
+				
+			}
+			//Paper/{id}/Keyword/{id} - DELTE - Remove specific keyword to paper
+			if(count($args) ==3 && $this->method=="DELETE" && $args[1] == "Keyword"){
+				//return "adding keyword " . $args[2] . " to paper " . $args[0];
+				if(is_numeric($args[0]) && is_numeric($args[2])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$changed = $conn->deleteData("papers_keywords","paper_id='".$args[0]."' and keyword_id='" . $args[2]."'");
+						if($changed != 0 && $changed != -1){
+							return parent::_response("Removed keyword from paper",200);
+						}elseif($changed != -1){
+							return parent::_response("paper does not have that key word",404);
+						}else{
+							return parent::_response("Failed to remove keyword from paper",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id and keyword id",400);
+				}	
+			}
+			//Paper/{id}/User/{id} - POST Add Specific user to paper
+			if(count($args) ==3 && $this->method=="POST" && $args[1] == "User"){
+				if(is_numeric($args[0]) && is_numeric($args[2])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("user_id","paper_id");
+						$values = array($args[2],$args[0]);
+						$id = $conn->insertData("user_papers",$columns,$values,true);
+						if($id != false){
+							return parent::_response("user added to paper",200);
+						}else{
+							return parent::_response("user or paper doesn't exist or is already added",400);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id and user id",40);
+				}
+			}
+			//Paper/{id}/User{id} - DELETE Delete Specific user to paper
+			if(count($args) ==3 && $this->method=="DELETE" && $args[1] == "User"){
+				//return "removing user " . $args[2] . " from paper " . $args[0];
+				if(is_numeric($args[0]) && is_numeric($args[2])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$changed = $conn->deleteData("user_papers","paper_id='".$args[0]."' and user_id='" . $args[2]."'");
+						if($changed != 0 && $changed != -1){
+							return parent::_response("Removed user from paper",200);
+						}elseif($changed != -1){
+							return parent::_response("paper does not have that user",404);
+						}else{
+							return parent::_response("Failed to remove user from paper",500);
+						}
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id and user id",400);
+				}	
+			}
+			
 			//Paper/{id} - PUT
 			if(count($args) ==1 && $this->method=="PUT"){
 				if(is_numeric($args[0])){
@@ -360,7 +478,7 @@
 			if($conn->connect("localhost","finalProject","root","final")){
 				
 				$fields = array("uid","access");
-				$data = $conn->getData("sessions",$fields,"access='" .$accessHash. "'");
+				$data = $conn->getData("sessions",$fields,null,"access='" .$accessHash. "'");
 				
 				//user logged in
 				if(count($data) !=0){
@@ -404,7 +522,7 @@
 						//var_dump($this->request);
 						$fields = array("user_id","username","password");
 						$username = $this->request['username'];
-						$data = $conn->getData("users",$fields,"username='" .$username. "'");
+						$data = $conn->getData("users",$fields,null,"username='" .$username. "'");
 						if($data[0]["password"]==$this->request['password']){
 							$access = $this->random_str(50);
 							$columns = array("access","uid");

@@ -61,13 +61,15 @@ class DB{
 		return $commaList;
 	}
 	//Builds the query based on user input to be used to query the db
-	function buildQuery($type,$table,$columns,$where=null,$values=null){
+	function buildQuery($type,$table,$columns,$join=null,$where=null,$values=null){
 		$query="";
 		if($type=="select"){
 			$query = $query . "select ";
 			$query = $query . $this->commaSeparate($columns);
 			$query = $query . " from " . $table;
-			
+			if($join !=null){
+				$query = $query . ' ' . $join;
+			}
 			if($where !=null){
 				$query = $query . " where " . $where;
 			}
@@ -92,10 +94,10 @@ class DB{
 		}
 	}
 	//Select statements method to execute them against the database, has optional where param to further filter results
-	function getData($table,$columns,$where=null){
+	function getData($table,$columns,$join=null,$where=null){
 		try{
 			$dbh = $this->getConnection();
-			$query = $this->buildQuery("select",$table,$columns,$where);
+			$query = $this->buildQuery("select",$table,$columns,$join,$where);
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			$data=$stmt->fetchAll();
@@ -107,16 +109,21 @@ class DB{
 		}
 	}
 	//insert statements method to execute against the database. 
-	function insertData($table,$columns,$values){
+	function insertData($table,$columns,$values,$ignore_insertid=false){
 		try{
+			$join=null;
 			$where=null;
 			$dbh = $this->getConnection();
-			$query = $this->buildQuery("insert",$table,$columns,$where,$values);
+			$query = $this->buildQuery("insert",$table,$columns,$join,$where,$values);
 			//echo $query;
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			
-			return $dbh->lastInsertId();
+			if($ignore_insertid){
+				return true;
+			}else{
+				return $dbh->lastInsertId();	
+			}
 		}
 		catch(PDOException $e){
 			echo $e->getMessage();
@@ -125,8 +132,9 @@ class DB{
 	}
 	function updateData($table,$columns,$values,$where=null){
 		try{
+			$join=null;
 			$dbh = $this->getConnection();
-			$query = $this->buildQuery("update",$table,$columns,$where,$values);
+			$query = $this->buildQuery("update",$table,$columns,$join,$where,$values);
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			$changed = $stmt->rowCount();
@@ -140,9 +148,10 @@ class DB{
 	//delete statements to execute against the database, optional where param to further clarify the statement
 	function deleteData($table,$where=null){
 		try{
+			$join=null;
 			$columns=null;
 			$dbh = $this->getConnection();
-			$query = $this->buildQuery("delete",$table,$columns,$where);
+			$query = $this->buildQuery("delete",$table,$columns,$join,$where);
 			$stmt = $dbh->prepare($query);
 			$stmt->execute();
 			$changed = $stmt->rowCount();
