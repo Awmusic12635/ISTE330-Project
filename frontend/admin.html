@@ -62,7 +62,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css">
 	<style>
-		.paperforms
+		.modal-forms
 		{
 			float: left;
 		}
@@ -307,7 +307,7 @@
 			loadPapers(true);
 			
 			$("#papers-button").click(function(){
-				$("#papers-panel").html("<form class='paperforms'>"+
+				$("#papers-panel").html("<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Edit Paper</legend>"+
 						"<select id='paperselect' onchange='loadPapers();'>"+
@@ -320,7 +320,7 @@
 						"<label class = 'admin' for = 'updatebutton'>Update Paper: <button id='updatebutton' type='button' onclick='updatePaper();'>Update</button>"+
 					"</fieldset>"+
 				"</form>"+
-				"<form class='paperforms'>"+
+				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Add Paper</legend>"+
 						"<label class = 'admin' for = 'title2'>Paper Title: <input type = 'text' id = 'title2' name = 'title2' size = '50'><br />"+
@@ -331,7 +331,7 @@
 						"<label class = 'admin' for = 'addbutton'>Add Paper: <button id='addbutton' type='button' onclick='addPaper();'>Add</button>"+
 					"</fieldset>"+
 				"</form>"+
-				"<form class='paperforms'>"+
+				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Delete Paper</legend>"+
 						"<select id='deleteselect'>"+
@@ -559,7 +559,7 @@
 	</ul>
 	
 	<div id = "papers-panel">
-        <form class="paperforms">
+        <form class="modal-formss">
         	<fieldset>
         		<legend>Edit Paper</legend>
 			 	<select id="paperselect" onchange="loadPapers();">
@@ -572,7 +572,7 @@
 				<label class = 'admin' for = "updatebutton">Update Paper: <button id="updatebutton" type="button" onclick="updatePaper();">Update</button>
             </fieldset>
         </form>
-		<form class="paperforms">
+		<form class="modal-forms">
         	<fieldset>
         		<legend>Add Paper</legend>
 				<label class = 'admin' for = "title2">Paper Title: <input type = "text" id = "title2" name = "title2" size = "50"><br />
@@ -583,7 +583,7 @@
 				<label class = 'admin' for = "addbutton">Add Paper: <button id="addbutton" type="button" onclick="addPaper();">Add</button>
             </fieldset>
         </form>
-		<form class="paperforms">
+		<form class="modal-forms">
         	<fieldset>
         		<legend>Delete Paper</legend>
 			 	<select id="deleteselect">
