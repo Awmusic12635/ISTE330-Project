@@ -341,6 +341,7 @@
 				"</form>");
 				$("#people-panel").html("");
 				$("#keywords-panel").html("");
+				loadPapers(true);
 			});
 			
 			$("#people-button").click(function(){
@@ -524,6 +525,7 @@
 		<li><p id = 'people-button'>People</p></li>
 		<li><p id = 'keywords-button'>Keywords</p></li>
 	</ul>
+	
 	<div id = "papers-panel">
         <form class="paperforms">
         	<fieldset>
@@ -558,5 +560,7 @@
             </fieldset>
         </form>
     </div>
+    <div id = "people-panel"></div>
+    <div id = "keywords-panel"></div>
 </body>
 </html>
