@@ -304,6 +304,55 @@
 					});
 			}
 			
+			$("a.papers-button").click(function(){
+				$("#papers-panel").html("<form class='paperforms'>".
+					"<fieldset>".
+						"<legend>Edit Paper</legend>".
+						"<select id='paperselect' onchange='loadPapers();'>".
+						"</select><br />".
+						"<label class = 'admin' for = 'title'>Paper Title: <input type = 'text' id = 'title' name = 'title' size = '50'><br />".
+						"<label class = 'admin' for = 'abstract'>Abstract: <input type = 'text' id = 'abstract' name = 'abstract' size = '50'><br />".
+						"<label class = 'admin' for = 'citation'>Citation: <input type = 'text' id = 'citation' name = 'citation' size = '50'><br />".
+						"<label class = 'admin' for = 'currentnum'>Current Number of People: <input type = 'text' id = 'currentnum' name = 'currentnum' size = '50'><br />".
+						"<label class = 'admin' for = 'currentnum'>Maximum Number of People: <input type = 'text' id = 'maxnum' name = 'maxnum' size = '50'><br />".
+						"<label class = 'admin' for = 'updatebutton'>Update Paper: <button id='updatebutton' type='button' onclick='updatePaper();'>Update</button>".
+					"</fieldset>".
+				"</form>".
+				"<form class='paperforms'>".
+					"<fieldset>".
+						"<legend>Add Paper</legend>".
+						"<label class = 'admin' for = 'title2'>Paper Title: <input type = 'text' id = 'title2' name = 'title2' size = '50'><br />".
+						"<label class = 'admin' for = 'abstract2'>Abstract: <input type = 'text' id = 'abstract2' name = 'abstract2' size = '50'><br />".
+						"<label class = 'admin' for = 'citation2'>Citation: <input type = 'text' id = 'citation2' name = 'citation2' size = '50'><br />".
+						"<label class = 'admin' for = 'currentnum2'>Current Number of People: <input type = 'text' id = 'currentnum2' name = 'currentnum2' size = '50'><br />".
+						"<label class = 'admin' for = 'currentnum2'>Maximum Number of People: <input type = 'text' id = 'maxnum2' name = 'maxnum2' size = '50'><br />".
+						"<label class = 'admin' for = 'addbutton'>Add Paper: <button id='addbutton' type='button' onclick='addPaper();'>Add</button>".
+					"</fieldset>".
+				"</form>".
+				"<form class='paperforms'>".
+					"<fieldset>".
+						"<legend>Delete Paper</legend>".
+						"<select id='deleteselect'>".
+						"</select><br />".
+						"<label class = 'admin' for = 'deletebutton'>Delete Paper: <button id='deletebutton' type='button' onclick='deletePaper();'>Delete</button>".
+					"</fieldset>".
+				"</form>");
+				$("#people-panel").html("");
+				$("#keywords-panel").html("");
+			});
+			
+			$("a.people-button").click(function(){
+				$("#people-panel").html("This is a test for the people tab.");
+				$("#papers-panel").html("");
+				$("#keywords-panel").html("");
+			});
+			
+			$("a.keywords-button").click(function(){
+				$("#keywords-panel").html("This is a test for the people tab.");
+				$("#people-panel").html("");
+				$("#papers-panel").html("");
+			});
+			
 			loadPapers(true);
 		});
 		
@@ -471,11 +520,11 @@
 	</ul>
 </nav>
 	<ul id = 'navigation'>
-		<li><a href = '#'>Papers</a></li>
-		<li><a href = '#'>People</a></li>
-		<li><a href = '#'>Keywords</a></li>
+		<li><a id = 'papers-button' href = '#'>Papers</a></li>
+		<li><a id = 'people-button' href = '#'>People</a></li>
+		<li><a id = 'keywords-button' href = '#'>Keywords</a></li>
 	</ul>
-	<div id = "panel">
+	<div id = "papers-panel">
         <form class="paperforms">
         	<fieldset>
         		<legend>Edit Paper</legend>
