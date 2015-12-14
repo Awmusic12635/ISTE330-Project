@@ -345,13 +345,45 @@
 			});
 			
 			$("#people-button").click(function(){
-				$("#people-panel").html("This is a test for the people tab.");
+				$("#people-panel").html("<form class='modal-forms'>"+
+					"<fieldset>"+
+						"<legend>Edit Person</legend>"+
+						"<select id='peopleselect' onchange='loadPeople();'>"+
+						"</select><br />"+
+						"<label class = 'admin' for = 'firstname'>First Name: <input type = 'text' id = 'firstname' name = 'firstname' size = '50'><br />"+
+						"<label class = 'admin' for = 'lastname'>Last Name: <input type = 'text' id = 'lastname' name = 'lastname' size = '50'><br />"+
+						"<label class = 'admin' for = 'username'>Username: <input type = 'text' id = 'username' name = 'username' size = '50'><br />"+
+						"<label class = 'admin' for = 'signupdate'>Signup Date: <input type = 'text' id = 'signupdate' name = 'signupdate' size = '50'><br />"+
+						"<label class = 'admin' for = 'email'>E-mail: <input type = 'text' id = 'email' name = 'email' size = '50'><br />"+
+						"<label class = 'admin' for = 'updatebutton'>Update Person: <button id='updatebutton' type='button' onclick='updatePerson();'>Update</button>"+
+					"</fieldset>"+
+				"</form>"+
+				"<form class='modal-forms'>"+
+					"<fieldset>"+
+						"<legend>Add Person</legend>"+
+						"<label class = 'admin' for = 'firstname2'>First Name: <input type = 'text' id = 'firstname2' name = 'firstname2' size = '50'><br />"+
+						"<label class = 'admin' for = 'lastname2'>Last Name: <input type = 'text' id = 'lastname2' name = 'lastname2' size = '50'><br />"+
+						"<label class = 'admin' for = 'username2'>Username: <input type = 'text' id = 'username2' name = 'username2' size = '50'><br />"+
+						"<label class = 'admin' for = 'signupdate2'>Signup Date: <input type = 'text' id = 'signupdate2' name = 'signupdate2' size = '50'><br />"+
+						"<label class = 'admin' for = 'email2'>E-mail: <input type = 'text' id = 'email2' name = 'email2' size = '50'><br />"+
+						"<label class = 'admin' for = 'password'>Password: <input type = 'text' id = 'password' name = 'password' size = '50'><br />"+
+						"<label class = 'admin' for = 'addbutton'>Add Person: <button id='addbutton' type='button' onclick='addPerson();'>Add</button>"+
+					"</fieldset>"+
+				"</form>"+
+				"<form class='modal-forms'>"+
+					"<fieldset>"+
+						"<legend>Delete Person</legend>"+
+						"<select id='deleteselect'>"+
+						"</select><br />"+
+						"<label class = 'admin' for = 'deletebutton'>Delete Person: <button id='deletebutton' type='button' onclick='deletePerson();'>Delete</button>"+
+					"</fieldset>"+
+				"</form>");
 				$("#papers-panel").html("");
 				$("#keywords-panel").html("");
 			});
 			
 			$("#keywords-button").click(function(){
-				$("#keywords-panel").html("This is a test for the people tab.");
+				$("#keywords-panel").html("This is a test for the keywords tab.");
 				$("#people-panel").html("");
 				$("#papers-panel").html("");
 			});
