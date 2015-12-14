@@ -304,6 +304,8 @@
 					});
 			}
 			
+			loadPapers(true);
+			
 			$("a.papers-button").click(function(){
 				$("#papers-panel").html("<form class='paperforms'>".
 					"<fieldset>".
@@ -352,8 +354,6 @@
 				$("#people-panel").html("");
 				$("#papers-panel").html("");
 			});
-			
-			loadPapers(true);
 		});
 		
 		//dynamically loads papers from database into the select menus on the page
@@ -520,9 +520,9 @@
 	</ul>
 </nav>
 	<ul id = 'navigation'>
-		<li><a id = 'papers-button' href = '#'>Papers</a></li>
-		<li><a id = 'people-button' href = '#'>People</a></li>
-		<li><a id = 'keywords-button' href = '#'>Keywords</a></li>
+		<li><span id = 'papers-button'>Papers</span></li>
+		<li><span id = 'people-button'>People</span></li>
+		<li><span id = 'keywords-button'>Keywords</span></li>
 	</ul>
 	<div id = "papers-panel">
         <form class="paperforms">
