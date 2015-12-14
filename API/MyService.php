@@ -362,6 +362,22 @@
 					return parent::_response("Must send a paper id and keyword id",400);
 				}	
 			}
+			
+			//Paper/{id}/User - GET - List all users of paper
+			if(count($args) ==2 && $this->method=="GET" && $args[1] == "User"){
+				if(is_numeric($args[0])){
+					$conn = new DB();
+					if($conn->connect("localhost","finalProject","root","final")){
+						$columns = array("user_id","first_name","last_name","username","signup_date","email","user_type_id");
+						$data = $conn->getData("user_papers",$columns,"join users using(user_id) join papers using(paper_id)","paper_id='".$args[0]."'");
+						return $data;
+					}else{
+						return parent::_response("Failed to connect to DB",500);
+					}
+				}else{
+					return parent::_response("Must send a paper id",400);
+				}
+			}
 			//Paper/{id}/User/{id} - POST Add Specific user to paper
 			if(count($args) ==3 && $this->method=="POST" && $args[1] == "User"){
 				if(is_numeric($args[0]) && is_numeric($args[2])){
