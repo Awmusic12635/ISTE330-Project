@@ -88,14 +88,17 @@
 			overflow-y: auto;
 		}
 		#loginButton {
-		color: #fff;
-		background-color: #6496c8;
-		text-shadow: -1px 1px #417cb8;
-		border: none;
-		position:absolute; 
-		top:0; 
-		right:0;
+			color: #fff;
+			background-color: #6496c8;
+			text-shadow: -1px 1px #417cb8;
+			border: none;
+			position:absolute; 
+			top:0; 
+			right:0;
 		}
+		#paperspanel, #peoplepanel, #keywordspanel{
++			padding-left: 5pt;
++		}
 	</style>
 	<style>
 	cbp-hrmenu {
@@ -321,10 +324,16 @@
 						"<label class = 'admin' for = 'currentnum'>Maximum Number of People: <input type = 'text' id = 'maxnum' name = 'maxnum' size = '50'><br />"+
 						"<label class = 'admin' for = 'authors'>Add Author: <br />"+
 						"<select id='peopleselect' onchange='loadPeople();'>"+
-						"</select><br />"+
+						"</select>"+
 						"<label class = 'admin' for = 'authors'>Remove Author: <br />"+
 						"<select id='removepeopleselect' onchange='loadAuthors();'>"+
 						"</select><br />"+
+						"<label class = 'admin' for = 'keywords'>Add Keyword: <br />"+
++						"<select id='keywordselect' onchange='loadKeywords();'>"+
++						"</select>"+
++						"<label class = 'admin' for = 'keywords'>Remove Keyword: <br />"+
++						"<select id='removekeywordselect' onchange='loadPaperKeywords();'>"+
++						"</select><br />"+
 						"<label class = 'admin' for = 'updatebutton'>Update Paper: <button id='updatebutton' type='button' onclick='updatePaper();'>Update</button>"+
 					"</fieldset>"+
 				"</form>"+
@@ -594,6 +603,48 @@
 							optEle.setAttribute('value', val);
 							optEle.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
 							document.getElementById("removepeopleselect").appendChild(optEle);
+							
+							
+						});
+						//firstTime = 'false';
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					console.dir(jqXHR);
+				}
+			});
+		}
+		
+		//dynamically loads keywords of a specific paper from database into the select menus on the page
+		function loadPaperKeywords(firstTime)
+		{
+			var keywordID = $('#keywordselect').val();
+			
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/Keyword/'+keywordID+'/User'},
+				dataType:'json',
+				success:function(data)
+				{
+					//console.dir(data);
+					//add options from database if first time method is called
+					if(firstTime == true)
+					{
+						$("#removekeywordselect").html('');
+						
+						$.each(data,function(index,element)
+						{
+							//console.dir(element);
+							//fill author select menu
+							var optEle = document.createElement('option');
+							var val = keywordID;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.keyword);
+							document.getElementById("removekeywordselect").appendChild(optEle);
 							
 							
 						});
