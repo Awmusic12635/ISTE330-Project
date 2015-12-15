@@ -561,6 +561,45 @@
 			});
 		}
 		
+		//dynamically loads authors of a specific paper from database into the select menus on the page
+		function loadAuthors(firstTime)
+		{
+			var paperID = $('paperselect').val();
+			
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/Paper/'+paperID+'/User'},
+				dataType:'json',
+				success:function(data)
+				{
+
+					//add options from database if first time method is called
+					if(firstTime == true)
+					{
+						$("#removepeopleselect").html('');
+						
+						$.each(data,function(index,element)
+						{
+							//fill author select menu
+							var optEle = document.createElement('option');
+							var val = paperID;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
+							document.getElementById("removepeopleselect").appendChild(optEle);
+						});
+						//firstTime = 'false';
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir(jqXHR);
+				}
+			});
+		}
+		
 		//dynamically loads keywords from database into the select menus on the page
 		function loadKeywords(firstTime)
 		{
@@ -578,50 +617,17 @@
 					if(firstTime == true)
 					{
 						$("#deletekeywordselect").html('');
-						$("#keywordselect").html('');
 						
 						$.each(data,function(index,element)
 						{
-							//fill edit select menu
+							//fill delete select menu
 							var optEle = document.createElement('option');
 							var val = element.keyword_id;
 							optEle.setAttribute('value', val);
 							optEle.appendChild(document.createTextNode(element.keyword));
-							document.getElementById("keywordselect").appendChild(optEle);
-							//fill delete select menu
-							var optEle2 = document.createElement('option');
-							var val2 = element.keyword_id;
-							optEle2.setAttribute('value', val2);
-							optEle2.appendChild(document.createTextNode(element.keyword));
-							document.getElementById("deletekeywordselect").appendChild(optEle2);
+							document.getElementById("deletekeywordselect").appendChild(optEle);
 						});
 						//firstTime = 'false';
-					}
-					//populate edit form
-					for(var i=0; i<document.getElementById("keywordselect").childNodes.length; i++)
-					{
-						if(document.getElementById("keywordselect").childNodes[i].selected)
-						{
-							$.ajax({
-								type:'get',
-								url:'proxy.php',
-								async:true,
-								cache:false,
-								data:{path:'/Keyword/'+document.getElementById("keywordselect").childNodes[i].getAttribute("value")},
-								dataType:'json',
-								success:function(data)
-								{
-									$.each(data,function(index,element)
-									{
-										document.getElementById("keyword").value = element.keyword;
-									});
-								},
-								error:function(jqXHR, textStatus, errorThrown) 
-								{
-									//console.dir(jqXHR);
-								}
-							});
-						}
 					}
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
@@ -648,7 +654,7 @@
 						//contentType:'application/json',
 						success:function(data)
 						{
-								alert("Paper Updated");
+							alert("Paper Updated");
 						},
 						error:function(jqXHR, textStatus, errorThrown) 
 						{
