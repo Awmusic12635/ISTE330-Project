@@ -1,4 +1,9 @@
 <?php
+	/*
+		ALL OF THE API FUNCTIONALITY IS BASICALLY HERE
+		
+		
+	*/
 	require_once("RestService.class.php");	
 	require_once("../DB/DB.php");
 	
@@ -164,6 +169,7 @@
 			}
 			//User/{id} - GET
 			if(count($args) ==1 && $this->method=="GET"){
+				//check if id is number
 				if(is_numeric($args[0])){
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
@@ -227,6 +233,7 @@
 			}
 			//User - POST
 			if(count($args) ==0 && $this->method=="POST"){
+				//check if everything comes in 
 				if(isset($this->request['password']) && isset($this->request['first_name']) && isset($this->request['last_name']) && isset($this->request['username']) && isset($this->request['signup_date']) && isset($this->request['email'])){
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
@@ -249,6 +256,7 @@
 			}
 			//User/{id} - DELETE
 			if(count($args) ==1 && $this->method=="DELETE"){
+				//check if id is num
 				if(is_numeric($args[0])){
 					$conn = new DB();
 					if($conn->connect("localhost","finalProject","root","final")){
@@ -268,7 +276,7 @@
 				}
 			}
 		}
-		
+		//All papers
 		protected function paper($args,$params){
 			//Paper - GET
 			if(count($args) ==0 && $this->method=="GET"){
