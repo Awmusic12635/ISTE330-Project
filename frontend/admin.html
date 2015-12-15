@@ -309,7 +309,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
-			
+			loadKeywords(true);
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -330,7 +330,7 @@
 						"</select><br />"+
 						"<label class = 'admin' for = 'keywords'>Add Keyword: <br />"+
 						"<select id='keywordselect' onchange='loadKeywords();'>"+
-						"</select>"+
+						"</select><br />"+
 						"<label class = 'admin' for = 'keywords'>Remove Keyword: <br />"+
 						"<select id='removekeywordselect' onchange='loadPaperKeywords();'>"+
 						"</select><br />"+
