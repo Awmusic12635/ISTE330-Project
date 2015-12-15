@@ -731,7 +731,7 @@
 				//contentType:'application/json',
 				success:function(data)
 				{
-					alert("Paper Added");
+					alert("Keyword Added");
 					loadKeywords(true);
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
@@ -804,7 +804,7 @@
 				{
 					$.ajax({
 						type:'delete',
-						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("deletekeywordselect").childNodes[i].getAttribute("value"),
+						url:'http://final.alexwacker.com/ISTE330-Project/API/Keyword/'+document.getElementById("deletekeywordselect").childNodes[i].getAttribute("value"),
 						async:true,
 						cache:false,
 						//contentType:'application/json',
