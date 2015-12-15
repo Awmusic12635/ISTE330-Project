@@ -97,8 +97,8 @@
 			right:0;
 		}
 		#papers-panel, #people-panel, #keywords-panel{
-+			padding-left: 5pt;
-+		}
+			padding-left: 5pt;
+		}
 	</style>
 	<style>
 	cbp-hrmenu {
@@ -639,7 +639,12 @@
 						
 						$.each(data,function(index,element)
 						{
-							//console.dir(element);
+							//fill add select menu
+							var optEle = document.createElement('option');
+							var val = element.keyword_id;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.keyword));
+							document.getElementById("keywordselect").appendChild(optEle);
 							//fill author select menu
 							var optEle = document.createElement('option');
 							var val = keywordID;
@@ -679,12 +684,6 @@
 						
 						$.each(data,function(index,element)
 						{
-							//fill add select menu
-							var optEle = document.createElement('option');
-							var val = element.keyword_id;
-							optEle.setAttribute('value', val);
-							optEle.appendChild(document.createTextNode(element.keyword));
-							document.getElementById("keywordselect").appendChild(optEle);
 							//fill delete select menu
 							var optEle = document.createElement('option');
 							var val = element.keyword_id;
