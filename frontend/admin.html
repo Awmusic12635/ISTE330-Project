@@ -317,6 +317,13 @@
 						"<label class = 'admin' for = 'citation'>Citation: <input type = 'text' id = 'citation' name = 'citation' size = '50'><br />"+
 						"<label class = 'admin' for = 'currentnum'>Current Number of People: <input type = 'text' id = 'currentnum' name = 'currentnum' size = '50'><br />"+
 						"<label class = 'admin' for = 'currentnum'>Maximum Number of People: <input type = 'text' id = 'maxnum' name = 'maxnum' size = '50'><br />"+
+						"<label class = 'admin' for = 'authors'>Add Author: <br />"+
+						"<select id='peopleselect' onchange='loadPeople();'>"+
+						"</select><br />"+
+						//DON'T WORRY ABOUT THIS YET
+						"<label class = 'admin' for = 'authors'>Remove Author: <br />"+
+						"<select id='' onchange=''>"+
+						"</select><br />"+
 						"<label class = 'admin' for = 'updatebutton'>Update Paper: <button id='updatebutton' type='button' onclick='updatePaper();'>Update</button>"+
 					"</fieldset>"+
 				"</form>"+
@@ -334,7 +341,7 @@
 				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Delete Paper</legend>"+
-						"<select id='deleteselect'>"+
+						"<select id='deletepaperselect'>"+
 						"</select><br />"+
 						"<label class = 'admin' for = 'deletebutton'>Delete Paper: <button id='deletebutton' type='button' onclick='deletePaper();'>Delete</button>"+
 					"</fieldset>"+
@@ -342,6 +349,7 @@
 				$("#people-panel").html("");
 				$("#keywords-panel").html("");
 				loadPapers(true);
+				loadPeople(true);
 			});
 			
 			$("#people-button").click(function(){
@@ -373,13 +381,14 @@
 				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Delete Person</legend>"+
-						"<select id='deleteselect'>"+
+						"<select id='deletepeopleselect'>"+
 						"</select><br />"+
 						"<label class = 'admin' for = 'deletebutton'>Delete Person: <button id='deletebutton' type='button' onclick='deletePerson();'>Delete</button>"+
 					"</fieldset>"+
 				"</form>");
 				$("#papers-panel").html("");
 				$("#keywords-panel").html("");
+				loadPeople(true);
 			});
 			
 			$("#keywords-button").click(function(){
@@ -393,7 +402,7 @@
 				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Delete Keyword</legend>"+
-						"<select id='deleteselect'>"+
+						"<select id='deletekeywordselect'>"+
 						"</select><br />"+
 						"<label class = 'admin' for = 'deletebutton'>Delete Keyword: <button id='deletebutton' type='button' onclick='deleteKeyword();'>Delete</button>"+
 					"</fieldset>"+
@@ -419,7 +428,7 @@
 					//add options from database if first time method is called
 					if(firstTime == true)
 					{
-						$("#deleteselect").html('');
+						$("#deletepaperselect").html('');
 						$("#paperselect").html('');
 						
 						$.each(data,function(index,element)
@@ -435,7 +444,7 @@
 							var val2 = element.paper_id;
 							optEle2.setAttribute('value', val2);
 							optEle2.appendChild(document.createTextNode(element.title));
-							document.getElementById("deleteselect").appendChild(optEle2);
+							document.getElementById("deletepaperselect").appendChild(optEle2);
 						});
 						//firstTime = 'false';
 					}
@@ -460,6 +469,80 @@
 										document.getElementById("citation").value = element.citation;
 										document.getElementById("currentnum").value = element.current_people;
 										document.getElementById("maxnum").value = element.max_people;
+									});
+								},
+								error:function(jqXHR, textStatus, errorThrown) 
+								{
+									//console.dir(jqXHR);
+								}
+							});
+						}
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir(jqXHR);
+				}
+			});
+		}
+		
+		//dynamically loads people from database into the select menus on the page
+		function loadPeople(firstTime)
+		{
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/User'},
+				dataType:'json',
+				success:function(data)
+				{
+
+					//add options from database if first time method is called
+					if(firstTime == true)
+					{
+						$("#deletepeopleselect").html('');
+						$("#peopleselect").html('');
+						
+						$.each(data,function(index,element)
+						{
+							//fill edit select menu
+							var optEle = document.createElement('option');
+							var val = element.user_id;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
+							document.getElementById("peopleselect").appendChild(optEle);
+							//fill delete select menu
+							var optEle2 = document.createElement('option');
+							var val2 = element.user_id;
+							optEle2.setAttribute('value', val2);
+							optEle2.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
+							document.getElementById("deletepeopleselect").appendChild(optEle2);
+						});
+						//firstTime = 'false';
+					}
+					//populate edit form
+					for(var i=0; i<document.getElementById("peopleselect").childNodes.length; i++)
+					{
+						if(document.getElementById("peopleselect").childNodes[i].selected)
+						{
+							$.ajax({
+								type:'get',
+								url:'proxy.php',
+								async:true,
+								cache:false,
+								data:{path:'/User/'+document.getElementById("peopleselect").childNodes[i].getAttribute("value")},
+								dataType:'json',
+								success:function(data)
+								{
+									$.each(data,function(index,element)
+									{
+										document.getElementById("firstname").value = element.title;
+										document.getElementById("lastname").value = element.abstract;
+										document.getElementById("username1").value = element.citation;
+										document.getElementById("signupdate").value = element.current_people;
+										document.getElementById("email").value = element.max_people;
 									});
 								},
 								error:function(jqXHR, textStatus, errorThrown) 
@@ -531,13 +614,13 @@
 		//deletes a paper from the database when the delete button is clicked
 		function deletePaper()
 		{
-			for(var i=0; i<document.getElementById("deleteselect").childNodes.length; i++)
+			for(var i=0; i<document.getElementById("deletepaperselect").childNodes.length; i++)
 			{
-				if(document.getElementById("deleteselect").childNodes[i].selected)
+				if(document.getElementById("deletepaperselect").childNodes[i].selected)
 				{
 					$.ajax({
 						type:'delete',
-						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("deleteselect").childNodes[i].getAttribute("value"),
+						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("deletepaperselect").childNodes[i].getAttribute("value"),
 						async:true,
 						cache:false,
 						//contentType:'application/json',
@@ -549,6 +632,33 @@
 						{
 							alert("Paper deleted");
 							loadPapers(true);
+						}
+					});
+				}
+			}
+		}
+		
+		//deletes a person from the database when the delete button is clicked
+		function deletePeople()
+		{
+			for(var i=0; i<document.getElementById("deletepersonselect").childNodes.length; i++)
+			{
+				if(document.getElementById("deletepersonselect").childNodes[i].selected)
+				{
+					$.ajax({
+						type:'delete',
+						url:'http://final.alexwacker.com/ISTE330-Project/API/User/'+document.getElementById("deletepersonselect").childNodes[i].getAttribute("value"),
+						async:true,
+						cache:false,
+						//contentType:'application/json',
+						success:function(data)
+						{
+							loadPeople(true);
+						},
+						error:function(jqXHR, textStatus, errorThrown) 
+						{
+							alert("Person deleted");
+							loadPeople(true);
 						}
 					});
 				}
@@ -600,7 +710,7 @@
 		<form class="modal-forms">
         	<fieldset>
         		<legend>Delete Paper</legend>
-			 	<select id="deleteselect">
+			 	<select id="deletepaperselect">
 				</select><br />
 				<label class = 'admin' for = "deletebutton">Delete Paper: <button id="deletebutton" type="button" onclick="deletePaper();">Delete</button>
             </fieldset>
