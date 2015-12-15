@@ -306,7 +306,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
-			loadAuthors();
+			loadAuthors(true);
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -639,7 +639,7 @@
 			});
 		}
 		
-		//updates a record in the database when update button is clicked
+		//updates a paper in the database when update button is clicked
 		function updatePaper()
 		{
 			for(var i=0; i<document.getElementById("paperselect").childNodes.length; i++)
@@ -650,6 +650,34 @@
 					$.ajax({
 						type:'put',
 						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("paperselect").childNodes[i].getAttribute("value"),
+						async:true,
+						cache:false,
+						data: obj,
+						//contentType:'application/json',
+						success:function(data)
+						{
+							alert("Paper Updated");
+						},
+						error:function(jqXHR, textStatus, errorThrown) 
+						{
+							alert("Paper Updated");
+						}
+					});
+				}
+			}
+		}
+		
+		//updates a person in the database when update button is clicked
+		function updatePerson()
+		{
+			for(var i=0; i<document.getElementById("peopleselect").childNodes.length; i++)
+			{
+				if(document.getElementById("peopleselect").childNodes[i].selected)
+				{
+					var obj = {'first_name': document.getElementById("firstname").value, 'last_name': document.getElementById("lastname").value, 'username': document.getElementById("username1").value, 'signup_date': document.getElementById("signupdate").value, 'email': document.getElementById("email").value}
+					$.ajax({
+						type:'put',
+						url:'http://final.alexwacker.com/ISTE330-Project/API/User/'+document.getElementById("peopleselect").childNodes[i].getAttribute("value"),
 						async:true,
 						cache:false,
 						data: obj,
@@ -682,6 +710,29 @@
 				{
 					alert("Paper Added");
 					loadPapers(true);
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir(jqXHR);
+				}
+			});
+		}
+		
+		//adds a keyword to the database when the add button is clicked
+		function addKeyword()
+		{
+			var obj = {'keyword': document.getElementById("keyword").value}
+			$.ajax({
+				type:'post',
+				url:'http://final.alexwacker.com/ISTE330-Project/API/Keyword',
+				async:true,
+				cache:false,
+				data: obj,
+				//contentType:'application/json',
+				success:function(data)
+				{
+					alert("Paper Added");
+					loadKeywords(true);
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
@@ -738,6 +789,33 @@
 						{
 							alert("Person deleted");
 							loadPeople(true);
+						}
+					});
+				}
+			}
+		}
+		
+		//deletes a keyword from the database when the delete button is clicked
+		function deleteKeyword()
+		{
+			for(var i=0; i<document.getElementById("deletekeywordselect").childNodes.length; i++)
+			{
+				if(document.getElementById("deletekeywordselect").childNodes[i].selected)
+				{
+					$.ajax({
+						type:'delete',
+						url:'http://final.alexwacker.com/ISTE330-Project/API/Paper/'+document.getElementById("deletekeywordselect").childNodes[i].getAttribute("value"),
+						async:true,
+						cache:false,
+						//contentType:'application/json',
+						success:function(data)
+						{
+							loadKeywords(true);
+						},
+						error:function(jqXHR, textStatus, errorThrown) 
+						{
+							alert("Keyword deleted");
+							loadKeywords(true);
 						}
 					});
 				}
