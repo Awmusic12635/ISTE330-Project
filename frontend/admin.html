@@ -306,6 +306,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
+			loadAuthors();
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -321,9 +322,8 @@
 						"<label class = 'admin' for = 'authors'>Add Author: <br />"+
 						"<select id='peopleselect' onchange='loadPeople();'>"+
 						"</select><br />"+
-						//DON'T WORRY ABOUT THIS YET
 						"<label class = 'admin' for = 'authors'>Remove Author: <br />"+
-						"<select id='' onchange=''>"+
+						"<select id='removepeopleselect' onchange='loadAuthors();'>"+
 						"</select><br />"+
 						"<label class = 'admin' for = 'updatebutton'>Update Paper: <button id='updatebutton' type='button' onclick='updatePaper();'>Update</button>"+
 					"</fieldset>"+
@@ -351,6 +351,7 @@
 				$("#keywords-panel").html("");
 				loadPapers(true);
 				loadPeople(true);
+				loadAuthors(true);
 			});
 			
 			$("#people-button").click(function(){
@@ -403,13 +404,14 @@
 				"<form class='modal-forms'>"+
 					"<fieldset>"+
 						"<legend>Delete Keyword</legend>"+
-						"<select id='deletekeywordselect'>"+
+						"<select id='deletekeywordselect' onchange='loadKeywords();'>"+
 						"</select><br />"+
 						"<label class = 'admin' for = 'deletebutton'>Delete Keyword: <button id='deletebutton' type='button' onclick='deleteKeyword();'>Delete</button>"+
 					"</fieldset>"+
 				"</form>");
 				$("#people-panel").html("");
 				$("#papers-panel").html("");
+				loadKeywords(true);
 			});
 		});
 		
