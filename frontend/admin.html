@@ -706,6 +706,11 @@
 				<label class = 'admin' for = "currentnum2">Current Number of People: <input type = "text" id = "currentnum2" name = "currentnum2" size = "50"><br />
 				<label class = 'admin' for = "currentnum2">Maximum Number of People: <input type = "text" id = "maxnum2" name = "maxnum2" size = "50"><br />
 				<label class = 'admin' for = "addbutton">Add Paper: <button id="addbutton" type="button" onclick="addPaper();">Add</button>
+				<select id='peopleselect' onchange='loadPeople();'>
+				</select><br />
+				<label class = 'admin' for = 'authors'>Remove Author: <br />
+				<select id='' onchange=''>
+				</select><br />
             </fieldset>
         </form>
 		<form class="modal-forms">
