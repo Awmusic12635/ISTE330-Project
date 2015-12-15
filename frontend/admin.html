@@ -539,11 +539,81 @@
 								{
 									$.each(data,function(index,element)
 									{
-										document.getElementById("firstname").value = element.title;
-										document.getElementById("lastname").value = element.abstract;
-										document.getElementById("username1").value = element.citation;
-										document.getElementById("signupdate").value = element.current_people;
-										document.getElementById("email").value = element.max_people;
+										document.getElementById("firstname").value = element.first_name;
+										document.getElementById("lastname").value = element.last_name;
+										document.getElementById("username1").value = element.username;
+										document.getElementById("signupdate").value = element.signup_date;
+										document.getElementById("email").value = element.email;
+									});
+								},
+								error:function(jqXHR, textStatus, errorThrown) 
+								{
+									//console.dir(jqXHR);
+								}
+							});
+						}
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir(jqXHR);
+				}
+			});
+		}
+		
+		//dynamically loads keywords from database into the select menus on the page
+		function loadKeywords(firstTime)
+		{
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/Keyword'},
+				dataType:'json',
+				success:function(data)
+				{
+
+					//add options from database if first time method is called
+					if(firstTime == true)
+					{
+						$("#deletekeywordselect").html('');
+						$("#keywordselect").html('');
+						
+						$.each(data,function(index,element)
+						{
+							//fill edit select menu
+							var optEle = document.createElement('option');
+							var val = element.keyword_id;
+							optEle.setAttribute('value', val);
+							optEle.appendChild(document.createTextNode(element.keyword));
+							document.getElementById("keywordselect").appendChild(optEle);
+							//fill delete select menu
+							var optEle2 = document.createElement('option');
+							var val2 = element.keyword_id;
+							optEle2.setAttribute('value', val2);
+							optEle2.appendChild(document.createTextNode(element.keyword));
+							document.getElementById("deletekeywordselect").appendChild(optEle2);
+						});
+						//firstTime = 'false';
+					}
+					//populate edit form
+					for(var i=0; i<document.getElementById("keywordselect").childNodes.length; i++)
+					{
+						if(document.getElementById("keywordselect").childNodes[i].selected)
+						{
+							$.ajax({
+								type:'get',
+								url:'proxy.php',
+								async:true,
+								cache:false,
+								data:{path:'/Keyword/'+document.getElementById("keywordselect").childNodes[i].getAttribute("value")},
+								dataType:'json',
+								success:function(data)
+								{
+									$.each(data,function(index,element)
+									{
+										document.getElementById("keyword").value = element.keyword;
 									});
 								},
 								error:function(jqXHR, textStatus, errorThrown) 
