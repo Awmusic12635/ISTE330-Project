@@ -309,7 +309,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
-			loadKeywords(true);
+			
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -330,7 +330,7 @@
 						"</select><br />"+
 						"<label class = 'admin' for = 'keywords'>Add Keyword: <br />"+
 						"<select id='keywordselect' onchange='loadKeywords();'>"+
-						"</select><br />"+
+						"</select>"+
 						"<label class = 'admin' for = 'keywords'>Remove Keyword: <br />"+
 						"<select id='removekeywordselect' onchange='loadPaperKeywords();'>"+
 						"</select><br />"+
@@ -521,18 +521,13 @@
 						
 						$.each(data,function(index,element)
 						{
-							//fill edit select menu
-							var optEle = document.createElement('option');
-							var val = element.user_id;
-							optEle.setAttribute('value', val);
-							optEle.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
-							document.getElementById("peopleselect").appendChild(optEle);
-							//fill delete select menu
-							var optEle2 = document.createElement('option');
-							var val2 = element.user_id;
-							optEle2.setAttribute('value', val2);
-							optEle2.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
-							document.getElementById("deletepeopleselect").appendChild(optEle2);
+							//console.log('hi');
+
+							
+							$('#peopleselect').append("<option value='"+element.user_id+"'>"+element.first_name+ " " + element.last_name+"</option>");
+
+							
+							$('#removepeopleselect').append("<option value='"+element.user_id+"'>"+element.first_name+ " " + element.last_name+"</option>");
 						});
 						//firstTime = 'false';
 					}
@@ -552,11 +547,11 @@
 								{
 									$.each(data,function(index,element)
 									{
-										document.getElementById("firstname").value = element.first_name;
-										document.getElementById("lastname").value = element.last_name;
-										document.getElementById("username1").value = element.username;
-										document.getElementById("signupdate").value = element.signup_date;
-										document.getElementById("email").value = element.email;
+										$("#firstname").val(element.first_name);
+										$("#lastname").val(element.last_name);
+										$("#username1").val(element.username);
+										$("#signupdate").val(element.signup_date);
+										$("#email").val(element.email);
 									});
 								},
 								error:function(jqXHR, textStatus, errorThrown) 
