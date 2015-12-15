@@ -306,7 +306,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
-			loadAuthors(true);
+			
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -481,6 +481,7 @@
 							});
 						}
 					}
+					loadAuthors(true);
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
@@ -566,7 +567,8 @@
 		//dynamically loads authors of a specific paper from database into the select menus on the page
 		function loadAuthors(firstTime)
 		{
-			var paperID = $('paperselect').val();
+			var paperID = $('#paperselect').val();
+			console.log(paperID);
 			
 			$.ajax({
 				type:'get',
@@ -577,7 +579,7 @@
 				dataType:'json',
 				success:function(data)
 				{
-
+					//console.dir(data);
 					//add options from database if first time method is called
 					if(firstTime == true)
 					{
@@ -585,19 +587,22 @@
 						
 						$.each(data,function(index,element)
 						{
+							//console.dir(element);
 							//fill author select menu
 							var optEle = document.createElement('option');
 							var val = paperID;
 							optEle.setAttribute('value', val);
 							optEle.appendChild(document.createTextNode(element.first_name + " " + element.last_name));
 							document.getElementById("removepeopleselect").appendChild(optEle);
+							
+							
 						});
 						//firstTime = 'false';
 					}
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
-					//console.dir(jqXHR);
+					console.dir(jqXHR);
 				}
 			});
 		}
