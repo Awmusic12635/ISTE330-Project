@@ -301,7 +301,7 @@
 				$("#loginButton").val('Logout');
 					$('#loginButton').prop('onclick',null).off('click');
 					$('#loginButton').click(function() {
-					   alert("logged out");  
+					   alert("Logged out.");  
 					   localStorage.clear();
 					   window.location.href="http://final.alexwacker.com/ISTE330-Project/frontend/index.html";
 					});
@@ -361,6 +361,7 @@
 				loadPapers(true);
 				loadPeople(true);
 				loadAuthors(true);
+				loadPaperKeywords(true);
 			});
 			
 			$("#people-button").click(function(){
@@ -912,6 +913,12 @@
 				<label class = 'admin' for = 'authors'>Remove Author: <br />
 				<select id='' onchange=''>
 				</select><br />
+				<label class = 'admin' for = 'keywords'>Add Keyword: <br />
++				<select id='keywordselect' onchange='loadKeywords();'>
++				</select>
++				<label class = 'admin' for = 'keywords'>Remove Keyword: <br />
++				<select id='removekeywordselect' onchange='loadPaperKeywords();'>
++				</select><br />
 				<label class = 'admin' for = "updatebutton">Update Paper: <button id="updatebutton" type="button" onclick="updatePaper();">Update</button>
 				
             </fieldset>
