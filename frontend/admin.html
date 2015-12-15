@@ -383,7 +383,21 @@
 			});
 			
 			$("#keywords-button").click(function(){
-				$("#keywords-panel").html("This is a test for the keywords tab.");
+				$("#keywords-panel").html("<form class='modal-forms'>"+
+					"<fieldset>"+
+						"<legend>Add Keyword</legend>"+
+						"<label class = 'admin' for = 'keyword'>Keyword Name: <input type = 'text' id = 'keyword' name = 'keyword' size = '50'><br />"+
+						"<label class = 'admin' for = 'addbutton'>Add Keyword: <button id='addbutton' type='button' onclick='addKeyword();'>Add</button>"+
+					"</fieldset>"+
+				"</form>"+
+				"<form class='modal-forms'>"+
+					"<fieldset>"+
+						"<legend>Delete Keyword</legend>"+
+						"<select id='deleteselect'>"+
+						"</select><br />"+
+						"<label class = 'admin' for = 'deletebutton'>Delete Keyword: <button id='deletebutton' type='button' onclick='deleteKeyword();'>Delete</button>"+
+					"</fieldset>"+
+				"</form>");
 				$("#people-panel").html("");
 				$("#papers-panel").html("");
 			});
