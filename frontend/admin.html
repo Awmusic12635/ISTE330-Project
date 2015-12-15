@@ -309,7 +309,7 @@
 			
 			loadPapers(true);
 			loadPeople(true);
-			loadKeywords(true);
+			
 			
 			$("#papers-button").click(function(){
 				$("#papers-panel").html("<form class='modal-forms'>"+
@@ -330,7 +330,7 @@
 						"</select><br />"+
 						"<label class = 'admin' for = 'keywords'>Add Keyword: <br />"+
 						"<select id='keywordselect' onchange='loadKeywords();'>"+
-						"</select><br />"+
+						"</select>"+
 						"<label class = 'admin' for = 'keywords'>Remove Keyword: <br />"+
 						"<select id='removekeywordselect' onchange='loadPaperKeywords();'>"+
 						"</select><br />"+
@@ -492,6 +492,7 @@
 						}
 					}
 					loadAuthors(true);
+					loadPaperKeywords(true);
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
@@ -527,7 +528,7 @@
 							$('#peopleselect').append("<option value='"+element.user_id+"'>"+element.first_name+ " " + element.last_name+"</option>");
 
 							
-							$('#removepeopleselect').append("<option value='"+element.user_id+"'>"+element.first_name+ " " + element.last_name+"</option>");
+							$('#deletepeopleselect').append("<option value='"+element.user_id+"'>"+element.first_name+ " " + element.last_name+"</option>");
 						});
 						//firstTime = 'false';
 					}
@@ -615,18 +616,19 @@
 		//dynamically loads keywords of a specific paper from database into the select menus on the page
 		function loadPaperKeywords(firstTime)
 		{
-			var keywordID = $('#keywordselect').val();
+			var paperID = $('#paperselect').val();
 			
 			$.ajax({
 				type:'get',
 				url:'proxy.php',
 				async:true,
 				cache:false,
-				data:{path:'/Keyword/'+keywordID+'/User'},
+				data:{path:'/Keyword'},
 				dataType:'json',
 				success:function(data)
 				{
-					//console.dir(data);
+					
+					console.dir(data);
 					//add options from database if first time method is called
 					if(firstTime == true)
 					{
@@ -641,8 +643,46 @@
 							optEle.appendChild(document.createTextNode(element.keyword));
 							document.getElementById("keywordselect").appendChild(optEle);
 							//fill author select menu
+							
+							loadPaperKeywords2(true);
+							
+						});
+						//firstTime = 'false';
+					}
+				},
+				error:function(jqXHR, textStatus, errorThrown) 
+				{
+					//console.dir("hi");
+				}
+			});
+		}
+		
+		//dynamically loads keywords of a specific paper from database into the select menus on the page
+		function loadPaperKeywords2(firstTime)
+		{
+			var paperID = $('#paperselect').val();
+			
+			$.ajax({
+				type:'get',
+				url:'proxy.php',
+				async:true,
+				cache:false,
+				data:{path:'/Paper/'+paperID+"/Keyword"},
+				dataType:'json',
+				success:function(data)
+				{
+					
+					console.dir(data);
+					//add options from database if first time method is called
+					if(firstTime == true)
+					{
+						$("#removekeywordselect").html('');
+						
+						$.each(data,function(index,element)
+						{
+							//fill author select menu
 							var optEle = document.createElement('option');
-							var val = keywordID;
+							var val = element.keyword_id;
 							optEle.setAttribute('value', val);
 							optEle.appendChild(document.createTextNode(element.keyword));
 							document.getElementById("removekeywordselect").appendChild(optEle);
@@ -654,7 +694,7 @@
 				},
 				error:function(jqXHR, textStatus, errorThrown) 
 				{
-					console.dir(jqXHR);
+					//console.dir("hi");
 				}
 			});
 		}
